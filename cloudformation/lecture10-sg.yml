@@ -27,10 +27,6 @@ Parameters:
     Type: String
     Default: '80'
 
-  SgEgFromPort1:
-    Type: String
-    Default: '3306'
-
   SGName2:
     Type: String
     Default: "lecture10-sg02"

@@ -1,11 +1,8 @@
 Parameters:
-  PJPrefix:
-    Type: String
-  
   #InternetALB
   ALBName:
     Type: String
-    Default: "lecture10-clf"
+    Default: "lecture10-CFn"
 
   IpAddressType:
     Type: String
@@ -40,7 +37,7 @@ Resources:
     Properties:
       Type: "application"
       Scheme: "internet-facing"
-      Name: !Sub ${ALBName}-alb
+      Name: !Sub "${ALBname}-LoadBalancer"
       IpAddressType: !Ref IpAddressType
       Subnets:
         - !ImportValue lecture10-clf-PublicSubnet1id
