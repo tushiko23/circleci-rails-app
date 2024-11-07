@@ -37,7 +37,7 @@ Resources:
     Properties:
       Type: "application"
       Scheme: "internet-facing"
-      Name: !Sub "${ALBname}-LoadBalancer"
+      Name: !Sub "${ALBName}-LoadBalancer"
       IpAddressType: !Ref IpAddressType
       Subnets:
         - !ImportValue lecture10-clf-PublicSubnet1id
