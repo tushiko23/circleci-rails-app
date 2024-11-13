@@ -13,17 +13,9 @@ Parameters:
 
   SgIngCidrIp1:
     Type: String
-    Default: 'Your IP Address'
-
-  SgIngFromPort1:
-    Type: String
-    Default: '22'
-
-  SgIngCidrIp2:
-    Type: String
     Default: '0.0.0.0/0'
 
-  SgIngFromPort2:
+  SgIngFromPort1:
     Type: String
     Default: '80'
 
@@ -31,7 +23,7 @@ Parameters:
     Type: String
     Default: "lecture10-sg02"
 
-  SgIngFromPort3:
+  SgIngFromPort2:
     Type: String
     Default: '3306'
 
@@ -39,11 +31,11 @@ Parameters:
     Type: String
     Default: "lecture10-sg03"
 
-  SgIngCidrIp4:
+  SgIngCidrIp3:
     Type: String
     Default: '0.0.0.0/0'
 
-  SgIngFromPort4:
+  SgIngFromPort3:
     Type: String
     Default: '80'
 
@@ -51,9 +43,9 @@ Resources:
   lecture10SG1:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: test-create
+      GroupDescription: create-ec2-sg
       GroupName: !Ref SGName1
-      VpcId: !ImportValue lecture10-clf-VPCid
+      VpcId: !ImportValue lecture10-CFn-VPCid
       Tags:
         - Key: "Name"
           Value: "lecture10"
@@ -61,9 +53,9 @@ Resources:
   lecture10SG2:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: test-create
+      GroupDescription: create-rds-sg
       GroupName: !Ref SGName2
-      VpcId: !ImportValue lecture10-clf-VPCid
+      VpcId: !ImportValue lecture10-CFn-VPCid
       Tags:
         - Key: "Name"
           Value: "lecture10"
@@ -77,15 +69,6 @@ Resources:
       ToPort: !Ref SgIngFromPort1
       CidrIp: !Ref SgIngCidrIp1
 
-  SG1Ingress2:
-    Type: AWS::EC2::SecurityGroupIngress
-    Properties:
-      GroupId: !Ref lecture10SG1
-      IpProtocol: tcp
-      FromPort: !Ref SgIngFromPort2
-      ToPort: !Ref SgIngFromPort2
-      CidrIp: !Ref SgIngCidrIp2
-
   SG1Egress1:
     Type: AWS::EC2::SecurityGroupEgress
     Properties:
@@ -98,8 +81,8 @@ Resources:
     Properties:
       GroupId: !Ref lecture10SG2
       IpProtocol: tcp
-      FromPort: !Ref SgIngFromPort3
-      ToPort: !Ref SgIngFromPort3
+      FromPort: !Ref SgIngFromPort2
+      ToPort: !Ref SgIngFromPort2
       SourceSecurityGroupId: !Ref lecture10SG1
 
   SG2Egress1:
@@ -112,14 +95,14 @@ Resources:
   lecture10SG3:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: test-create
+      GroupDescription: create-alb-sg
       GroupName: !Ref SGName3
-      VpcId: !ImportValue lecture10-clf-VPCid
+      VpcId: !ImportValue lecture10-CFn-VPCid
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: !Ref SgIngFromPort4
-          ToPort: !Ref SgIngFromPort4
-          CidrIp: !Ref SgIngCidrIp4
+          FromPort: !Ref SgIngFromPort3
+          ToPort: !Ref SgIngFromPort3
+          CidrIp: !Ref SgIngCidrIp3
       Tags:
         - Key: "Name"
           Value: "lecture10"

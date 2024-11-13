@@ -1,4 +1,5 @@
 Parameters:
+
   #InternetALB
   ALBName:
     Type: String
@@ -24,10 +25,10 @@ Resources:
       Protocol: HTTP
       Matcher:
         HttpCode: '200'
-      VpcId: !ImportValue lecture10-clf-VPCid
+      VpcId: !ImportValue lecture10-CFn-VPCid
       TargetType: instance
       Targets:
-        - Id: !ImportValue Lecture10-EC2clf
+        - Id: !ImportValue Lecture10-EC2CFn
 
   #=================================
   # ALBの作成
@@ -37,11 +38,11 @@ Resources:
     Properties:
       Type: "application"
       Scheme: "internet-facing"
-      Name: !Sub "${ALBName}-LoadBalancer"
+      Name: !Sub ${ALBName}-alb
       IpAddressType: !Ref IpAddressType
       Subnets:
-        - !ImportValue lecture10-clf-PublicSubnet1id
-        - !ImportValue lecture10-clf-PublicSubnet2id
+        - !ImportValue lecture10-CFn-PublicSubnet1id
+        - !ImportValue lecture10-CFn-PublicSubnet2id
       SecurityGroups:
         - !ImportValue "lecture10-sg-SG3-ALB"
       Tags:
