@@ -182,3 +182,8 @@ Outputs:
     Value: !Ref  TestVPC
     Export:
       Name: !Sub  ${NameBase}-VPCid
+  
+  PublicSubnet1:
+    Value: !Ref  PublicSubnet1  
+    Export:
+      Name: !Sub ${NameBase}-PublicSubnet1id
