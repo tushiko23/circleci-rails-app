@@ -12,20 +12,7 @@ jobs:
           command: |
             cfn-lint -i W3002 -t task12-test/*.yml
 
-orbs:
-  aws-cli: circleci/aws-cli@1.4.0
-jobs:
-  deploy-cfn:
-    executor: aws-cli/default
-    steps:
-      - checkout
-      - aws-cli/setup
-      - run:
-          name: Deploy Cloudformation Template with new Docker image
-          command: |
-            aws cloudformation deploy --template-file cloudformation/lecture10-network.yml --stack-name circlecisample1
 workflows:
   raisetech:
     jobs:
       - cfn-lint
-      - deploy-cfn
