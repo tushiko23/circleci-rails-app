@@ -187,3 +187,8 @@ Outputs:
     Value: !Ref  PublicSubnet1  
     Export:
       Name: !Sub ${NameBase}-PublicSubnet1id
+  
+  PublicSubnet2:
+    Value: !Ref  PublicSubnet2  
+    Export:
+      Name: !Sub ${NameBase}-PublicSubnet2id
