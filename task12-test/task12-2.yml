@@ -65,9 +65,9 @@ Resources:
     Properties:
       GroupId: !Ref lecture10SG1
       IpProtocol: tcp
-      FromPort: !Ref SgIngFromPort2
-      ToPort: !Ref SgIngFromPort2
-      CidrIp: !Ref SgIngCidrIp2
+      FromPort: !Ref SgIngFromPort1
+      ToPort: !Ref SgIngFromPort1
+      CidrIp: !Ref SgIngCidrIp1
 
 
 
