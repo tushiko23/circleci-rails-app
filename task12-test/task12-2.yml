@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: "2010-09-09"
+AWSTemplateFormatVersion: 2010-09-09
 Description: lecture10-cloudformation
 
 Resources:
@@ -14,7 +14,6 @@ Resources:
 
 Outputs:
   SecurityGroup1Id:
-    Description: ID of the first security group
     Value: !Ref lecture10SG1
     Export:
       Name: lecture10-sg-SG1-EC2
