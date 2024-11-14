@@ -1,13 +1,2 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: lecture10-cloudformation
-
-Resources:
-  lecture10SG1:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: create-ec2-sg
-      GroupName: lecture10-sg01
-      VpcId: !ImportValue "lecture10-CFn-VPCid"
-      Tags:
-        - Key: Name
-          Value: lecture10
