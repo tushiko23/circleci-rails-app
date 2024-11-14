@@ -7,13 +7,13 @@ Resources:
     Properties:
       GroupDescription: create-ec2-sg
       GroupName: lecture10-sg01
-      VpcId: !ImportValue lecture10-CFn-VPCid
+      VpcId: !ImportValue "lecture10-CFn-VPCid"
       Tags:
         - Key: Name
           Value: lecture10
 
 Outputs:
   SecurityGroup1Id:
-    Value: !Ref lecture10SG1
+    Value: !Ref "lecture10SG1"
     Export:
       Name: lecture10-sg-SG1-EC2
