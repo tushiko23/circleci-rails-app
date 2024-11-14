@@ -39,13 +39,13 @@ Parameters:
     Type: String
     Default: "lecture10-sg03"
 
-  SgIngCidrIp4:
-    Type: String
-    Default: '0.0.0.0/0'
+  #SgIngCidrIp4:
+    #Type: String
+    #Default: '0.0.0.0/0'
 
-  SgIngFromPort4:
-    Type: String
-    Default: '80'
+  #SgIngFromPort4:
+    #Type: String
+    #Default: '80'
 
 Resources:
   lecture10SG1:
@@ -115,11 +115,6 @@ Resources:
       GroupDescription: create-alb-sg
       GroupName: !Ref SGName3
       VpcId: !ImportValue lecture10-CFn-VPCid
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: !Ref SgIngFromPort4
-          ToPort: !Ref SgIngFromPort4
-          CidrIp: !Ref SgIngCidrIp4
       Tags:
         - Key: "Name"
           Value: "lecture10"
@@ -142,4 +137,3 @@ Outputs:
     Value: !Ref lecture10SG3
     Export:
       Name: !Sub "${NameBase}-SG3-ALB"
-      
