@@ -11,9 +11,3 @@ Resources:
       Tags:
         - Key: Name
           Value: lecture10
-
-Outputs:
-  SecurityGroup1Id:
-    Value: !Ref "lecture10SG1"
-    Export:
-      Name: lecture10-sg-SG1-EC2
