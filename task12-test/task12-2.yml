@@ -39,14 +39,6 @@ Parameters:
     Type: String
     Default: "lecture10-sg03"
 
-  #SgIngCidrIp4:
-    #Type: String
-    #Default: '0.0.0.0/0'
-
-  #SgIngFromPort4:
-    #Type: String
-    #Default: '80'
-
 Resources:
   lecture10SG1:
     Type: AWS::EC2::SecurityGroup
@@ -73,9 +65,11 @@ Resources:
     Properties:
       GroupId: !Ref lecture10SG1
       IpProtocol: tcp
-      FromPort: !Ref SgIngFromPort1
-      ToPort: !Ref SgIngFromPort1
-      CidrIp: !Ref SgIngCidrIp1
+      FromPort: !Ref SgIngFromPort2
+      ToPort: !Ref SgIngFromPort2
+      CidrIp: !Ref SgIngCidrIp2
+
+
 
   SG1Ingress2:
     Type: AWS::EC2::SecurityGroupIngress
@@ -118,6 +112,22 @@ Resources:
       Tags:
         - Key: "Name"
           Value: "lecture10"
+
+  SG3Ingress1:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref lecture10SG3
+      IpProtocol: tcp
+      FromPort: !Ref SgIngFromPort2
+      ToPort: !Ref SgIngFromPort2
+      CidrIp: !Ref SgIngCidrIp2
+
+  SG2Egress3:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      GroupId: !Ref lecture10SG3
+      IpProtocol: -1
+      CidrIp: 0.0.0.0/0
 
 Outputs:
   SecurityGroup1Id:
