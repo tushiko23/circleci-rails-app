@@ -13,7 +13,7 @@ Parameters:
 
   SgIngCidrIp1:
     Type: String
-    Default: '0.0.0.0/0'  # CIDR形式に修正
+    Default: 'My IP'  
 
   SgIngFromPort1:
     Type: String
