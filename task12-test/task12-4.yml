@@ -113,3 +113,9 @@ Resources:
     Type: "AWS::EC2::EIP"
     Properties:
       Domain: vpc
+
+  IPAssoc:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      InstanceId: !Ref Lecture10EC2CFn
+      EIP: !Ref ElasticIP
