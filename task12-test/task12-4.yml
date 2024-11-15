@@ -126,4 +126,3 @@ Outputs:
     Value: !Ref Lecture10EC2CFn
     Export:
       Name: "Lecture10-EC2CFn"
-      
