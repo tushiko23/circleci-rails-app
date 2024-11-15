@@ -129,4 +129,6 @@ Outputs:
   InstancePublicIp:
     Description: "The public IP address of the EC2 instance"
     Value: !GetAtt Lecture10EC2CFn.PublicIp
-    
+    Export:
+      Name: "Lecture10-public-IP-CFn"
+  
