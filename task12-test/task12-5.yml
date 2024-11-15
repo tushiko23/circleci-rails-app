@@ -1,12 +1,8 @@
 Parameters:
-
   ALBName:
     Type: String
     Default: "lecture10-CFn"
 
-  #=================================
-  # ターゲットグループの作成
-  #=================================       
 Resources:
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
@@ -23,4 +19,3 @@ Resources:
       TargetType: instance
       Targets:
         - Id: !ImportValue "Lecture10-EC2CFn"
-        
