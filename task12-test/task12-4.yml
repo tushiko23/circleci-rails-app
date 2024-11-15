@@ -119,3 +119,10 @@ Resources:
     Properties:
       InstanceId: !Ref Lecture10EC2CFn
       EIP: !Ref ElasticIP
+
+Outputs:
+  InstanceId:
+    Description: The Instance ID
+    Value: !Ref Lecture10EC2CFn
+    Export:
+      Name: Lecture10-EC2CFn
