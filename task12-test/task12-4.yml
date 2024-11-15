@@ -126,3 +126,7 @@ Outputs:
     Value: !Ref Lecture10EC2CFn
     Export:
       Name: "Lecture10-EC2CFn"
+  InstancePublicIp:
+    Description: "The public IP address of the EC2 instance"
+    Value: !GetAtt Lecture10EC2CFn.PublicIp
+    
