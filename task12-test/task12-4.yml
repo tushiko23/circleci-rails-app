@@ -19,4 +19,4 @@ Resources:
             Action: 
               - "sts:AssumeRole"
       Path: "/"
-  
+
