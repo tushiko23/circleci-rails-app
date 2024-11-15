@@ -1,6 +1,29 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Create an EC2 instance with a key pair
 
+Parameters:
+  
+  KeyPairName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: "Key Pair Name"
+  
+  InstanceTypeParameter:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.nano
+      - t2.micro
+      - t2.small
+  
+  ProjectName:
+    Type: String
+    Description: Lecture10-CFn-EC2
+  
+  EC2InstanceAMI:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+    Description: The AMI ID for the EC2 instance
+
 #-----------------------------------------------------------------------------
 # IAM Role to access S3 Bucket
 #-----------------------------------------------------------------------------
@@ -49,6 +72,26 @@ Resources:
       Path: "/"
       Roles:
       - !Ref S3AccessRole 
+
+  # ------------------------------------------------------------
+  #  EC2の作成
+  # ------------------------------------------------------------   
+  Lecture10EC2CFn:
+    Type: AWS::EC2::Instance
+    Properties:
+      IamInstanceProfile: !Ref S3AccessInstanceProfile
+      InstanceType: !Ref InstanceTypeParameter
+      ImageId: !Ref EC2InstanceAMI
+      KeyName: !Ref KeyPairName
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          DeviceIndex: "0"
+          SubnetId: !ImportValue lecture10-CFn-PublicSubnet1id
+          GroupSet:
+            - !ImportValue "lecture10-sg-SG1-EC2"
+      Tags:
+        - Key: Name
+          Value: !Ref ProjectName
 
 # ------------------------------------------------------------
 #  ElasticIPの作成&EC2にアタッチ
