@@ -11,16 +11,16 @@ Resources:
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: !Sub ${ALBName}-tg
+      Name: !Sub "${ALBName}-tg"
       Tags:
         - Key: Name
-          Value: !Sub ${ALBName}-tg
+          Value: !Sub "${ALBName}-tg"
       Port: 80
       Protocol: HTTP
       Matcher:
         HttpCode: '200'
-      VpcId: !ImportValue lecture10-CFn-VPCid
+      VpcId: !ImportValue "lecture10-CFn-VPCid"
       TargetType: instance
       Targets:
-        - Id: !ImportValue Lecture10-EC2CFn
+        - Id: !ImportValue "Lecture10-EC2CFn"
         
