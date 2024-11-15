@@ -1,0 +1,21 @@
+Parameters:
+  PJPrefix: 
+    Type: String
+
+  DBInstanceName:
+    Type: String
+    Default: "rds"
+
+# ------------------------------------------------------------#
+#  DBサブネットグループの作成
+# ------------------------------------------------------------#
+Resources:
+  DBSubnetGroup: 
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties: 
+      DBSubnetGroupName: !Sub "${PJPrefix}-${DBInstanceName}-subnet"
+      DBSubnetGroupDescription: "-"
+      SubnetIds: 
+        - !ImportValue lecture10-CFn-PrivateSubnet1id
+        - !ImportValue lecture10-CFn-PrivateSubnet2id
+        
