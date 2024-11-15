@@ -4,18 +4,18 @@ Description: Create an EC2 instance with a key pair
 #-----------------------------------------------------------------------------
 # IAM Role to access S3 Bucket
 #-----------------------------------------------------------------------------
-Resources:
+Resources: 
   S3AccessRole:
     Type: "AWS::IAM::Role"
     Properties:
+      RoleName: "IAMRole"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
-        Statement:
+        Statement: 
           - Effect: "Allow"
-            Principal:
-              Service:
+            Principal: 
+              Service: 
                 - "ec2.amazonaws.com"
-            Action:
+            Action: 
               - "sts:AssumeRole"
       Path: "/"
-      
