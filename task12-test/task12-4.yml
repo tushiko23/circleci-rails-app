@@ -1,13 +1,14 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Create an EC2 instance with a key pair
 
-Resources:
 #-----------------------------------------------------------------------------
 # IAM Role to access S3 Bucket
 #-----------------------------------------------------------------------------
+Resources: 
   S3AccessRole:
     Type: "AWS::IAM::Role"
     Properties:
+      RoleName: "IAMRole"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement: 
