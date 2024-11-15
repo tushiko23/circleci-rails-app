@@ -120,7 +120,6 @@ Resources:
       InstanceId: !Ref Lecture10EC2CFn
       EIP: !Ref ElasticIP
 
-
 Outputs:
   InstanceId:
     Description: "The Instance ID"
