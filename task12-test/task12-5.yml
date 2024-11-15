@@ -32,13 +32,13 @@ Resources:
     Properties:
       Type: "application"
       Scheme: "internet-facing"
-      Name: !Sub ${ALBName}-alb
+      Name: !Sub "${ALBName}-alb"
       IpAddressType: !Ref IpAddressType
       Subnets:
-        - !ImportValue lecture10-CFn-PublicSubnet1id
-        - !ImportValue lecture10-CFn-PublicSubnet2id
+        - !ImportValue "lecture10-CFn-PublicSubnet1id"
+        - !ImportValue "lecture10-CFn-PublicSubnet2id"
       SecurityGroups:
         - !ImportValue "lecture10-sg-SG3-ALB"
       Tags:
         - Key: Name
-          Value: !Sub ${ALBName}-alb
+          Value: !Sub "${ALBName}-alb"
