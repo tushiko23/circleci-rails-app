@@ -18,7 +18,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Sub "${OrganizationName}-${SystemName}-bucket"
-       LifecycleConfiguration:
+      LifecycleConfiguration:
         Rules:
           - Id: IntelligentTierRule
             Status: Enabled
