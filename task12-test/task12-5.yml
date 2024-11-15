@@ -54,5 +54,5 @@ Resources:
           TargetGroupArn: !Ref TargetGroup
       LoadBalancerArn: !Ref ALB
       Port: 80
-      Protocol: HTTP   
+      Protocol: HTTP
       
