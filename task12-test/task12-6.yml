@@ -1,6 +1,7 @@
 Parameters:
   PJPrefix: 
     Type: String
+    Default: "lecture10"
 
   DBInstanceName:
     Type: String
