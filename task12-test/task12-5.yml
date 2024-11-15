@@ -42,3 +42,17 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "${ALBName}-alb"
+
+  #=================================
+  # ALBをターゲットグループに関連付け
+  #================================= 
+  ListenerHTTP:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref ALB
+      Port: 80
+      Protocol: HTTP   
+      
