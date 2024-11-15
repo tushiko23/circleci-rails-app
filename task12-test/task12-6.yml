@@ -19,4 +19,3 @@ Resources:
       SubnetIds: 
         - !ImportValue lecture10-CFn-PrivateSubnet1id
         - !ImportValue lecture10-CFn-PrivateSubnet2id
-        
