@@ -24,6 +24,14 @@ Parameters:
     Default: "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
     Description: The AMI ID for the EC2 instance
 
+  EC2InstanceVolumeSize:
+    Type: String
+    Default: "20"
+  
+  EC2InstanceVolumeType:
+    Type: String
+    Default: "gp2"
+
 #-----------------------------------------------------------------------------
 # IAM Role to access S3 Bucket
 #-----------------------------------------------------------------------------
@@ -89,6 +97,11 @@ Resources:
           SubnetId: !ImportValue lecture10-CFn-PublicSubnet1id
           GroupSet:
             - !ImportValue "lecture10-sg-SG1-EC2"
+      BlockDeviceMappings:
+        - DeviceName: /dev/sdb
+          Ebs:
+            VolumeSize: !Ref EC2InstanceVolumeSize
+            VolumeType: !Ref EC2InstanceVolumeType
       Tags:
         - Key: Name
           Value: !Ref ProjectName
