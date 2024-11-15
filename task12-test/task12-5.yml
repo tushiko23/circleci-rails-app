@@ -1,51 +1,26 @@
-AWSTemplateFormatVersion: "2010-09-09"
-Description: Create an EC2 instance with a key pair
+Parameters:
 
-#-----------------------------------------------------------------------------
-# IAM Role to access S3 Bucket
-#-----------------------------------------------------------------------------
-Resources: 
-  S3AccessRole:
-    Type: "AWS::IAM::Role"
-    Properties:
-      RoleName: "IAMRole"
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement: 
-          - Effect: "Allow"
-            Principal: 
-              Service: 
-                - "ec2.amazonaws.com"
-            Action: 
-              - "sts:AssumeRole"
-      Path: "/"
+  ALBName:
+    Type: String
+    Default: "lecture10-CFn"
 
-  AccessPolicies:
-    Type: AWS::IAM::Policy
+  #=================================
+  # ターゲットグループの作成
+  #=================================       
+Resources:
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      PolicyName: s3access
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: "Allow"
-          Action:
-              - s3:GetObject
-              - s3:PutObject
-              - s3:ListBucket
-              - s3:DeleteObject
-              - s3:GetBucketLocation
-          Resource: "arn:aws:s3:::*"
-        - Effect: "Allow"
-          Action: "*"
-          Resource:
-            - "arn:aws:s3:::<lecture10-CFn-bucket>"
-            - "arn:aws:s3:::<lecture10-CFn-bucket>/*"
-      Roles:
-      - !Ref S3AccessRole
-
-  S3AccessInstanceProfile:
-    Type: AWS::IAM::InstanceProfile
-    Properties:
-      Path: "/"
-      Roles:
-      - !Ref S3AccessRole
+      Name: !Sub ${ALBName}-tg
+      Tags:
+        - Key: Name
+          Value: !Sub ${ALBName}-tg
+      Port: 80
+      Protocol: HTTP
+      Matcher:
+        HttpCode: '200'
+      VpcId: !ImportValue lecture10-CFn-VPCid
+      TargetType: instance
+      Targets:
+        - Id: !ImportValue Lecture10-EC2CFn
+        
