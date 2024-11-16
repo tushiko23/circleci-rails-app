@@ -1,6 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: |
-  Create an S3 bucket
+Description: Create an S3 bucket
 
 Parameters:
   OrganizationName:
@@ -35,4 +34,5 @@ Resources:
               Days: 365
       Tags:
         - Key: Name
-          Value: !Sub ${OrganizationName}-${SystemName}-bucket
+          Value: !Sub "${OrganizationName}-${SystemName}-bucket"
+          

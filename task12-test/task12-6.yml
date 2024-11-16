@@ -43,6 +43,7 @@ Parameters:
 
   AvailabilityZone:
     Type: AWS::EC2::AvailabilityZone::Name
+    Default: "ap-northeast-1a"
 
   MultiAZ: 
     Type: String
