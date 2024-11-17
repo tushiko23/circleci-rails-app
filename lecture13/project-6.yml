@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "Create an S3 bucket for cloudformation"
+
+Parameters:
+
+  NameBase:
+    Type: String
+    Description: "Rails-app-Project-S3"
+    Default: Rails-app-Project
+
+  OrganizationName:
+    Description: Organization Name
+    Type: String
+    Default: "rails"
+
+  SystemName:
+    Description: System Name
+    Type: String
+    Default: "app-project"
+
+
+  #-----------------------------------------------------------------------------
+  # S3 bucket
+  #-----------------------------------------------------------------------------
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${OrganizationName}-${SystemName}-bucket"
+      LifecycleConfiguration:
+        Rules:
+          - Id: IntelligentTierRule
+            Status: Enabled
+            Transitions:
+              - TransitionInDays: 0
+                StorageClass: INTELLIGENT_TIERING
+      IntelligentTieringConfigurations:
+        - Id: DeepArchiveConfig
+          Status: Enabled
+          Tierings:
+            - AccessTier: ARCHIVE_ACCESS
+              Days: 180
+            - AccessTier: DEEP_ARCHIVE_ACCESS
+              Days: 365
+      Tags:
+        - Key: Name
+          Value: !Ref NameBase
+
