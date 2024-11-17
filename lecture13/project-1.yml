@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "lecture10-cloudformation"
+Description: "Automated Deployment of a Rails Application Using CircleCI, Ansible, and CloudFormation"
 
 Parameters:
   NameBase: 
