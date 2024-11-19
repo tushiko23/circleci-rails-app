@@ -7,6 +7,10 @@ Parameters:
     Description: "Rails-app-Project-EC2"
     Default: Rails-app-Project
 
+  KeyPairName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: "Key Pair Name"
+
   InstanceTypeParameter:
     Type: String
     Default: t2.micro
@@ -140,6 +144,7 @@ Resources:
       IamInstanceProfile: !Ref InstanceProfile
       InstanceType: !Ref InstanceTypeParameter
       ImageId: !Ref EC2InstanceAMI
+      KeyName: !Ref KeyPairName
       NetworkInterfaces:
         - AssociatePublicIpAddress: true
           DeviceIndex: "0"

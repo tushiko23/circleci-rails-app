@@ -19,6 +19,14 @@ Parameters:
     Type: String
     Default: '80'
 
+  SgIngCidrIpSSH:
+    Type: String
+    Default: 'My IP' 
+
+  SgIngFromPortSSH:
+    Type: String
+    Default: '22'
+
   SGName2:
     Type: String
     Default: "rds-sg"
@@ -50,6 +58,15 @@ Resources:
       FromPort: !Ref SgIngFromPort1
       ToPort: !Ref SgIngFromPort1
       CidrIp: !Ref SgIngCidrIp1
+
+  ProjectSG1SSH:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref ProjectSG1
+      IpProtocol: tcp
+      FromPort: !Ref SgIngFromPortSSH
+      ToPort: !Ref SgIngFromPortSSH
+      CidrIp: !Ref SgIngCidrIpSSH
 
   ProjectSG1Egress:
     Type: AWS::EC2::SecurityGroupEgress
