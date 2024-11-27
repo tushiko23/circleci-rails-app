@@ -1,0 +1,10 @@
+- name: Remove MariaDB of default DB server on my EC2
+  shell: |
+    sudo yum update -y
+    sudo yum remove -y mariadb-*
+
+- name: Install MySQL on my EC2
+  shell: |
+    sudo yum localinstall -y https://dev.mysql.com/get/mysql80-community-release-el7-11.noarch.rpm
+    sudo yum install -y --enablerepo=mysql80-community mysql-community-server
+    sudo yum install -y --enablerepo=mysql80-community mysql-community-devel  
