@@ -1,0 +1,2 @@
+[ansible-target-node]
+ansible-dev-target1 ansible_host=18.182.121.223 ansible_connection=ssh ansible_user=ec2-user
