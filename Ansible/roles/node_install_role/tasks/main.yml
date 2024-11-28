@@ -1,0 +1,8 @@
+- name: Install NVM for installing node v17.9.1
+  shell: bash -lc "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash"
+
+- name: Source bash profile
+  shell: bash -lc  "source /home/ec2-user/.bash_profile"
+
+- name: Install Node using NVM
+  shell: bash -lc "nvm install v17.9.1"

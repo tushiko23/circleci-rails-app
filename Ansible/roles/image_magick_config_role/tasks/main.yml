@@ -1,0 +1,5 @@
+- name: Active Storage setting up Minimagick
+  lineinfile:
+    path: "/home/ec2-user/raisetech-live8-sample-app/config/application.rb"
+    line: "config.active_storage.variant_processor = :mini_magick"
+    insertafter: "config.load_defaults 7.1"

@@ -1,0 +1,16 @@
+- name: Run Command "bundle install"
+  shell: bash -lc "bundle install"
+  args: 
+    chdir: /home/ec2-user/raisetech-live8-sample-app
+  vars:
+    ansible_command_timeout: 1800
+
+- name: Installing Yarn to resoulve Webpack Dependencies
+  shell: bash -lc "yarn install"
+  args:
+    chdir: /home/ec2-user/raisetech-live8-sample-app
+  vars:
+    ansible_command_timeout: 1800    
+
+- name: Run Command "bin/setup"
+  shell: bash -lc "/home/ec2-user/raisetech-live8-sample-app/bin/setup"

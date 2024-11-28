@@ -1,0 +1,6 @@
+- name: Initialized npm for Installing Webpack and Webpackcli
+  shell: bash -lc "npm init -y"
+
+- name: Installing Webpack and Webpackcli on devDependencies
+  shell: bash -lc "npm install -D webpack webpack-cli" 
+ 
