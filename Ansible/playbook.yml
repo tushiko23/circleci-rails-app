@@ -1,0 +1,19 @@
+- name: Deploy Rails application on AWS resource
+  hosts:
+    - ansible-target-node
+  become: True
+  become_user: ec2-user
+
+  roles:
+    - yum_packege_role 
+    - app_source_role 
+    - ruby_install_role
+    - bundler_install_role
+    - rails_install_role 
+    - node_install_role
+    - yarn_install_role
+    -  webpack_install_role
+    - mysql_install_role
+    - db_server_role   
+    - image_magick_config_role 
+    - set_up_role

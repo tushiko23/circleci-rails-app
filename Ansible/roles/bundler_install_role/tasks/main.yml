@@ -1,0 +1,2 @@
+- name: Install bundler gem
+  shell: bash -lc  "/home/ec2-user/.rbenv/shims/gem install bundler -v 2.3.14"
