@@ -1,0 +1,16 @@
+- name: Install the latest version of nginx
+  command: sudo amazon-linux-extras install nginx1 -y
+
+- name: Start nginx service
+  service:
+    name: nginx
+    state: started
+  become: True
+  become_user: root
+
+- name: Enable nginx service
+  service:
+    name: nginx
+    enabled: yes
+  become: True
+  become_user: root
