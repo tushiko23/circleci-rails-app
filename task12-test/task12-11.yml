@@ -1,22 +1,26 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Create an S3 bucket
+Description: "Create an S3 bucket"
 
 Parameters:
   OrganizationName:
     Description: Organization Name
     Type: String
+    Default: "lecture10"
+
   SystemName:
     Description: System Name
     Type: String
+    Default: "cfn"
 
-Resources:
+
   #-----------------------------------------------------------------------------
   # S3 bucket
   #-----------------------------------------------------------------------------
+Resources:
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ${OrganizationName}-${SystemName}-bucket
+      BucketName: !Sub "${OrganizationName}-${SystemName}-bucket"
       LifecycleConfiguration:
         Rules:
           - Id: IntelligentTierRule
@@ -35,4 +39,3 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "${OrganizationName}-${SystemName}-bucket"
-          

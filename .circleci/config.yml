@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   python: circleci/python@2.0.3
+  aws-cli: circleci/aws-cli@3.1.1
 jobs:
   cfn-lint:
     executor: python/default
@@ -10,9 +11,28 @@ jobs:
       - run:
           name: run cfn-lint
           command: |
-            cfn-lint -i W3002 -t cloudformation/*.yml
+            cfn-lint -i W3002 -t lecture13/*.yml
+
+  execute_cfn:
+    executor: aws-cli/default
+    steps:
+      - checkout
+      - aws-cli/setup
+      - run:
+          name: create_stack_cloudformation
+          command: |
+            aws cloudformation deploy --stack-name lecture13-sample1 --template-file lecture13/project-1.yml
+            aws cloudformation deploy --stack-name lecture13-sample2 --template-file lecture13/project-2.yml  --parameter-overrides SgIngCidrIpSSH=$MY_IP 
+            aws cloudformation deploy --stack-name lecture13-sample3 --template-file lecture13/project-3.yml  --parameter-overrides KeyPairName=$KEY_PAIR_NAME --capabilities CAPABILITY_NAMED_IAM
+           # aws cloudformation deploy --stack-name lecture13-sample4 --template-file lecture13/project-4.yml
+           # aws cloudformation deploy --stack-name lecture13-sample5 --template-file lecture13/project-5.yml
+           # aws cloudformation deploy --stack-name lecture13-sample6 --template-file lecture13/project-6.yml
+           
 
 workflows:
   raisetech:
     jobs:
       - cfn-lint
+      - execute_cfn:
+          requires:
+            - cfn-lint

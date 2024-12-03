@@ -1,0 +1,188 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Create an EC2 instance for cloudformation" 
+
+Parameters:
+  NameBase:
+    Type: String
+    Description: "Rails-app-Project-EC2"
+    Default: Rails-app-Project
+
+  KeyPairName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: "Key Pair Name"
+
+  InstanceTypeParameter:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.nano
+      - t2.micro
+      - t2.small
+
+  EC2InstanceVolumeSize:
+    Type: String
+    Default: "20"
+  
+  EC2InstanceVolumeType:
+    Type: String
+    Default: "gp2"
+  
+  EC2InstanceAMI:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+    Description: The AMI ID for the EC2 instance
+
+  S3BucketName: 
+    Description: Type of this BucketName
+    Type: String
+    Default: rails-app-project-s3
+
+#-----------------------------------------------------------------------------
+# IAM Role to access S3 Bucket and Session Manager
+#-----------------------------------------------------------------------------
+Resources:  
+  AccessRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: "Rails-app-project-Role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "ec2.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Path: "/"
+      Tags:
+        - Key: Name
+          Value: !Ref NameBase
+
+  S3AccessPolicies:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: s3access
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+              - s3:GetObject
+              - s3:PutObject
+              - s3:ListBucket
+              - s3:DeleteObject
+              - s3:GetBucketLocation
+          Resource: "arn:aws:s3:::*"
+        - Effect: Allow
+          Action: "*"
+          Resource:
+            - !Sub 'arn:aws:s3:::${S3BucketName}'
+            - !Sub 'arn:aws:s3:::${S3BucketName}/*'
+      Roles:
+      - !Ref AccessRole
+
+  SSMAccessPolicies:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: "AmazonSSMManagedInstanceCore"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+              - "ssm:DescribeAssociation"
+              - "ssm:GetDeployablePatchSnapshotForInstance"
+              - "ssm:GetDocument"
+              - "ssm:DescribeDocument"
+              - "ssm:GetManifest"
+              - "ssm:GetParameter"
+              - "ssm:GetParameters"
+              - "ssm:ListAssociations"
+              - "ssm:ListInstanceAssociations"
+              - "ssm:PutInventory"
+              - "ssm:PutComplianceItems"
+              - "ssm:PutConfigurePackageResult"
+              - "ssm:UpdateAssociationStatus"
+              - "ssm:UpdateInstanceAssociationStatus"
+              - "ssm:UpdateInstanceInformation"
+          Resource: "*"
+        - Effect: Allow
+          Action:
+              - "ssmmessages:CreateControlChannel"
+              - "ssmmessages:CreateDataChannel"
+              - "ssmmessages:OpenControlChannel"
+              - "ssmmessages:OpenDataChannel"
+          Resource: "*"
+        - Effect: Allow
+          Action:
+              - "ec2messages:AcknowledgeMessage"
+              - "ec2messages:DeleteMessage"
+              - "ec2messages:FailMessage"
+              - "ec2messages:GetEndpoint"
+              - "ec2messages:GetMessages"
+              - "ec2messages:SendReply"
+          Resource: "*"   
+      Roles:
+      - !Ref AccessRole
+
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+      - !Ref AccessRole 
+
+  # ------------------------------------------------------------
+  #  EC2の作成
+  # ------------------------------------------------------------   
+  ProjectEC2:
+    Type: AWS::EC2::Instance
+    Properties:
+      BlockDeviceMappings:
+        - DeviceName: /dev/sdb
+          Ebs:
+            VolumeSize: !Ref EC2InstanceVolumeSize
+            VolumeType: !Ref EC2InstanceVolumeType
+      IamInstanceProfile: !Ref InstanceProfile
+      InstanceType: !Ref InstanceTypeParameter
+      ImageId: !Ref EC2InstanceAMI
+      KeyName: !Ref KeyPairName
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: true
+          DeviceIndex: "0"
+          SubnetId: !ImportValue "Rails-app-project-PublicSubnet1id"
+          GroupSet:
+            - !ImportValue "Rails-app-Project-SG1-EC2"
+      Tags:
+        - Key: Name
+          Value: !Ref NameBase
+
+  # ------------------------------------------------------------
+  #  ElasticIPの作成&EC2にアタッチ
+  # ------------------------------------------------------------ 
+  ElasticIP:
+    Type: "AWS::EC2::EIP"
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: !Ref NameBase
+
+  IPAssoc:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      InstanceId: !Ref ProjectEC2
+      EIP: !Ref ElasticIP
+
+Outputs:
+  InstanceId:
+    Description: The Instance ID
+    Value: !Ref ProjectEC2
+    Export:
+      Name: Rails-app-Project-EC2
+
+  InstancePublicIp:
+    Description: The public IP address of the EC2 instance
+    Value: !GetAtt ProjectEC2.PublicIp

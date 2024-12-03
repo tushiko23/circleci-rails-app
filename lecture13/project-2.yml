@@ -1,0 +1,148 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Security Group Creation Stack
+
+Parameters:
+  NameBase:
+    Description: "this is base name"
+    Type: String
+    Default: Rails-app-Project
+
+  SGName1:
+    Type: String
+    Default: 'ec2-sg'
+
+  SgIngCidrIp1:
+    Type: String
+    Default: '0.0.0.0/0'
+
+  SgIngFromPort1:
+    Type: String
+    Default: '80'
+
+  SgIngCidrIpSSH:
+    Type: String
+    Default: 'My IP' 
+
+  SgIngFromPortSSH:
+    Type: String
+    Default: '22'
+
+  SGName2:
+    Type: String
+    Default: "rds-sg"
+
+  SgIngFromPort2:
+    Type: String
+    Default: '3306'
+
+  SGName3:
+    Type: String
+    Default: "alb-sg"
+
+Resources:
+  ProjectSG1:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: create-ec2-security-group
+      GroupName: !Ref SGName1
+      VpcId: !ImportValue Rails-app-project-VPCid
+      Tags:
+        - Key: "Name"
+          Value: !Ref NameBase
+
+  ProjectSG1Ingress:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref ProjectSG1
+      IpProtocol: tcp
+      FromPort: !Ref SgIngFromPort1
+      ToPort: !Ref SgIngFromPort1
+      CidrIp: !Ref SgIngCidrIp1
+
+  ProjectSG1SSH:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref ProjectSG1
+      IpProtocol: tcp
+      FromPort: !Ref SgIngFromPortSSH
+      ToPort: !Ref SgIngFromPortSSH
+      CidrIp: !Ref SgIngCidrIpSSH
+
+  ProjectSG1Egress:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      GroupId: !Ref ProjectSG1
+      IpProtocol: -1
+      CidrIp: 0.0.0.0/0
+
+
+  ProjectSG2:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: create-rds-sg
+      GroupName: !Ref SGName2
+      VpcId: !ImportValue Rails-app-project-VPCid
+      Tags:
+        - Key: "Name"
+          Value: !Ref NameBase
+
+  ProjectSG2Ingress:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref ProjectSG2
+      IpProtocol: tcp
+      FromPort: !Ref SgIngFromPort2
+      ToPort: !Ref SgIngFromPort2
+      SourceSecurityGroupId: !Ref ProjectSG1
+
+  ProjectSG2Egress:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      GroupId: !Ref ProjectSG2
+      IpProtocol: -1
+      CidrIp: 0.0.0.0/0
+
+  ProjectSG3:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: create-alb-sg
+      GroupName: !Ref SGName3
+      VpcId: !ImportValue Rails-app-project-VPCid
+      Tags:
+        - Key: "Name"
+          Value: !Ref NameBase
+
+  ProjectSG3Ingress:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref ProjectSG3
+      IpProtocol: tcp
+      FromPort: !Ref SgIngFromPort1
+      ToPort: !Ref SgIngFromPort1
+      CidrIp: !Ref SgIngCidrIp1
+
+  SG2Egress3:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      GroupId: !Ref ProjectSG3
+      IpProtocol: -1
+      CidrIp: 0.0.0.0/0
+
+Outputs:
+  SecurityGroup1Id:
+    Description: "ID of the first security group"
+    Value: !Ref ProjectSG1
+    Export:
+      Name: !Sub "${NameBase}-SG1-EC2"
+
+  SecurityGroup2Id:
+    Description: "ID of the second security group"
+    Value: !Ref ProjectSG2
+    Export:
+      Name: !Sub "${NameBase}-SG2-RDS"
+
+  SecurityGroup3Id:
+    Description: "ID of the third security group"
+    Value: !Ref ProjectSG3
+    Export:
+      Name: !Sub "${NameBase}-SG3-ALB"

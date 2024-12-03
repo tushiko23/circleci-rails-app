@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Create an EC2 instance for cloudformation" 
+
+Parameters:
+  S3BucketName: 
+    Description: Type of this BucketName
+    Type: String
+    Default: rails-app-project-s3
+
+Resources:  
+  AccessRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: "Rails-app-project-Role1"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement: 
+          - 
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "ec2.amazonaws.com"
+            Action: 
+              - "sts:AssumeRole"
+      Path: "/"
+
+  S3AccessPolicies:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: s3access
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+              - s3:GetObject
+              - s3:PutObject
+              - s3:ListBucket
+              - s3:DeleteObject
+              - s3:GetBucketLocation
+          Resource: "arn:aws:s3:::*"
+        - Effect: Allow
+          Action: "*"
+          Resource:
+            - !Sub 'arn:aws:s3:::${S3BucketName}'
+            - !Sub 'arn:aws:s3:::${S3BucketName}/*'
+      Roles:
+      - !Ref AccessRole
