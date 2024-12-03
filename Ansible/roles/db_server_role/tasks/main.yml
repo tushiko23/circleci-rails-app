@@ -33,3 +33,19 @@
     state: present
     line: "  password: pJhOqcfLh:|cHe[0{+e5u#4%<8Sm"
     insertafter: "^\\s*host:\\s.*\\.ap-northeast-1\\.rds\\.amazonaws\\.com$"
+
+- name: Comment out "socket /tmp/mysql.sock" on my development environment
+  lineinfile:
+    path: "/home/ec2-user/raisetech-live8-sample-app/config/database.yml"
+    state: present
+    line: "# socket: /tmp/mysql.sock"
+    regexp: "^\\s*socket: /tmp/mysql.sock$"
+    insertafter: "^\\s*database: raisetech_live8_sample_app_development*$"
+
+- name: Comment out "socket /tmp/mysql.sock" on my test environment
+  lineinfile:
+    path: "/home/ec2-user/raisetech-live8-sample-app/config/database.yml"
+    state: present
+    line: "# socket: /tmp/mysql.sock"
+    regexp: "^\\s*socket: /tmp/mysql.sock$"
+    insertafter: "^\\s*database: raisetech_live8_sample_app_test*$"      
