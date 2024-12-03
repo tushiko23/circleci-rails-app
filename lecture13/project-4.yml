@@ -63,3 +63,13 @@ Resources:
       LoadBalancerArn: !Ref ALB
       Port: 80
       Protocol: HTTP
+
+Outputs:
+  OutputDNSName:
+    Value: !GetAtt ALB.DNSName
+    Export:
+      Name: !Sub "${NameBase}-${ALBName}-dns-name"
+  OutputHostZone:
+    Value: !GetAtt ALB.CanonicalHostedZoneID
+    Export:
+      Name: !Sub "${NameBase}-${ALBName}-hostzoneid"

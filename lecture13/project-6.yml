@@ -8,16 +8,10 @@ Parameters:
     Description: "Rails-app-Project-S3"
     Default: Rails-app-Project
 
-  OrganizationName:
-    Description: Organization Name
+  S3BucketName: 
+    Description: Type of this BucketName
     Type: String
-    Default: "rails"
-
-  SystemName:
-    Description: System Name
-    Type: String
-    Default: "app-project"
-
+    Default: rails-app-project-s3
 
   #-----------------------------------------------------------------------------
   # S3 bucket
@@ -26,7 +20,7 @@ Resources:
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "${OrganizationName}-${SystemName}-bucket"
+      BucketName: !Sub ${S3BucketName}
       LifecycleConfiguration:
         Rules:
           - Id: IntelligentTierRule
@@ -46,3 +40,8 @@ Resources:
         - Key: Name
           Value: !Ref NameBase
 
+Outputs:
+  S3BucketName:
+    Value: !Ref S3Bucket
+    Export:
+      Name: Rails-app-Project-S3

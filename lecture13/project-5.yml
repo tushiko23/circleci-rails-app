@@ -99,3 +99,24 @@ Resources:
         - Key: "Name"
           Value: !Ref NameBase
     DeletionPolicy: "Delete"
+
+Outputs:
+  DBInstanceID:
+    Value: !Ref DBInstance
+    Export:
+      Name: !Sub "${NameBase}-${DBInstanceName}-id"
+
+  DBInstanceEndpoint:
+    Value: !GetAtt DBInstance.Endpoint.Address
+    Export:
+      Name: !Sub "${NameBase}-${DBInstanceName}-endpoint"
+
+  DBName:
+    Value: !Ref DBName
+    Export:
+      Name: !Sub "${NameBase}-${DBInstanceName}-dbname"
+
+  SecretName:
+    Value: !Sub "${NameBase}-${DBInstanceName}-master-credentials"
+    Export:
+      Name: !Sub "${NameBase}-${DBInstanceName}-secret-name"
