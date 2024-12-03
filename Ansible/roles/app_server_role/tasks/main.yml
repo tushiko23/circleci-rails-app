@@ -1,10 +1,10 @@
-#- name: Port 3000 delete line to puma.rb 
-#  lineinfile:
-#    path: "/home/ec2-user/raisetech-live8-sample-app/config/puma.rb"
-#    state: absent
-#    line: '# port ENV.fetch("PORT") { 3000 }'
-#    regexp: 'port ENV.fetch("PORT") { 3000 }'
-#    insertbefore: "^# Specifies the `environment` that Puma will run in.$"
+- name: Port 3000 delete line to puma.rb 
+  lineinfile:
+    path: "/home/ec2-user/raisetech-live8-sample-app/config/puma.rb"
+    state: present
+    line: '# port ENV.fetch("PORT") { 3000 }'
+    regexp: '^\s*port ENV\.fetch\("PORT"\) \{ 3000 \}$'
+    insertafter: "^\\s*#\\s*Specifies the `port` that Puma will listen on to receive requests; default is 3000.\\s*#\\s*$"
     
 - name: Puma service sample copy file to systemd puma service
   copy:
@@ -20,18 +20,10 @@
   become: yes
   become_user: root
 
-    #- name: Start systemd Puma service
-    # systemd: 
-    #   name: puma
-    #   state: started
-    #  enabled: yes
-    #  become: yes
-    # become_user: root      
-
 - name: Start puma service
   service:
     name: puma
-    state: restarted
+    state: started
   become: True
   become_user: root
 
@@ -40,18 +32,4 @@
     name: puma
     enabled: yes
   become: True
-  become_user: root
-    
-          #- name: Start puma service
-          #  service:
-          #    name: puma
-          #    state: started
-          #  become: True
-          #  become_user: root
-
-          #- name: Enable puma service
-          #  service:
-          #    name: puma
-          #    enabled: yes
-          #  become: True
-          #  become_user: root 
+  become_user: root 
