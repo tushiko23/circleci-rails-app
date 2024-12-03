@@ -1,0 +1,33 @@
+- name: Install rbenv
+  git:
+    repo: https://github.com/sstephenson/rbenv.git
+    dest: /home/ec2-user/.rbenv
+
+- name: Set up rbenv in profile
+  lineinfile:
+    path: /home/ec2-user/.bash_profile
+    line: 'export PATH="$HOME/.rbenv/bin:$PATH"'
+    state: present
+
+- name: Initialize rbenv
+  lineinfile:
+    path: /home/ec2-user/.bash_profile
+    line: 'eval "$(rbenv init -)"'
+    state: present
+
+- name: Source bash profile
+  shell: bash -lc  "source /home/ec2-user/.bash_profile"
+  become: true
+
+- name: Install ruby-build plugin for rbenv
+  git:
+    repo: https://github.com/sstephenson/ruby-build.git
+    dest: /home/ec2-user/.rbenv/plugins/ruby-build  
+      
+- name: Install Ruby version 3.2.3
+  shell: bash -lc "/home/ec2-user/.rbenv/bin/rbenv install 3.2.3"
+  vars:
+    ansible_command_timeout: 1800
+
+- name: Set global Ruby version to 3.2.3
+  shell: bash -lc  "/home/ec2-user/.rbenv/bin/rbenv global 3.2.3" 

@@ -1,0 +1,26 @@
+# roles/yum_package_role/tasks/main.yml
+- name: Update yum packages
+  command: sudo yum update -y
+
+- name: Install yum packages on my EC2 server
+  yum:
+    name:
+      - git
+      - make
+      - gcc-c++
+      - patch
+      - libyaml-devel
+      - libicu-devel
+      - zlib-devel
+      - readline-devel
+      - libxml2-devel
+      - libxslt-devel
+      - ImageMagick
+      - ImageMagick-devel
+      - openssl-devel
+      - libcurl
+      - libcurl-devel
+      - curl
+      - libffi-devel        
+    state: present
+  become_user: root    

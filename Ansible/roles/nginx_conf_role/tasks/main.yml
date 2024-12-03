@@ -1,0 +1,38 @@
+- name: Config nginx.conf for Puma server socket connecting
+  copy: 
+    src: /home/ec2-user/roles/nginx_conf_role/tasks/nginx.conf
+    dest: /etc/nginx/nginx.conf
+    remote_src: false  
+    follow: yes
+  become: True
+  become_user: root
+
+- name: Change /var/lib/nginx/ User and Usergroup and Permission
+  file: 
+    path: /var/lib/nginx/
+    owner: ec2-user
+    group: ec2-user
+    mode: 0755
+    recurse: yes
+  become: True
+  become_user: root
+    
+- name: Reload systemd daemon-reload
+  systemd:
+    daemon_reload: yes
+  become: yes
+  become_user: root
+   
+- name: Restart nginx service
+  service:
+    name: nginx
+    state: restarted
+  become: True
+  become_user: root
+
+- name: Restart puma service
+  service:
+    name: puma
+    state: restarted
+  become: True
+  become_user: root    

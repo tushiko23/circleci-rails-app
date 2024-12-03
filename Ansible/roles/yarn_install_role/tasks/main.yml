@@ -1,0 +1,2 @@
+- name: Install Yarn version 1.22.19
+  shell: bash -lc "npm install -global yarn@1.22.19"

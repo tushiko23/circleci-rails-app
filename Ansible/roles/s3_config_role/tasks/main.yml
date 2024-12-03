@@ -1,0 +1,48 @@
+- name: Comment out store uploaded files on the local file configration
+  lineinfile:
+    path: "/home/ec2-user/raisetech-live8-sample-app/config/environments/development.rb"
+    state: present
+    line: "  # config.active_storage.service = :local"
+    regexp: "  config.active_storage.service = :local"  
+    insertbefore:  "^\\s*#//s*Don't care if the mailer can't send.*$"
+
+- name: Comment in store uploaded files on the Amazon s3 service message and configration
+  lineinfile:
+    path: "/home/ec2-user/raisetech-live8-sample-app/config/environments/development.rb"
+    state: present
+    line: |
+       # Store uploaded files on the Amazon s3 service (see config/storage.yml for options).
+       config.active_storage.service = :amazon
+    insertafter: "^\\s*# config.active_storage.service = :local*$"
+
+- name: Add line AWS ACCESS KEY ID on config/storage.yml
+  lineinfile:
+    path: "/home/ec2-user/raisetech-live8-sample-app/config/storage.yml"
+    state: present
+    line: " access_key_id: <%= ENV['AWS_ACCESS_KEY_ID'] %>"
+    insertafter: "^\\s*bucket:.*$"
+
+- name: Add line AWS ACCESS KEY on config/storage.yml
+  lineinfile:
+    path: "/home/ec2-user/raisetech-live8-sample-app/config/storage.yml"
+    state: present
+    line: " secret_access_key:  <%= ENV['AWS_SECRET_ACCESS_KEY'] %>"
+    insertafter: "^\\s*access_key_id:.*$"
+
+- name: Copy AWS credientials and S3 bucket name on my target node
+  copy:
+    src: /home/ec2-user/.bash_profile
+    dest: /home/ec2-user/.bash_profile 
+    remote_src: false
+    follow: yes
+
+- name: Source bash profile
+  shell: bash -lc  "source /home/ec2-user/.bash_profile"
+  become: true
+
+- name: Retart puma service
+  service:
+    name: puma
+    state: restarted
+  become: True
+  become_user: root    
