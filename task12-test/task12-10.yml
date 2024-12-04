@@ -51,6 +51,18 @@ Parameters:
     AllowedValues: [ "true", "false" ]
 
 # ------------------------------------------------------------#
+#  DBSubnetGroup
+# ------------------------------------------------------------#
+  DBSubnetGroup: 
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties: 
+      DBSubnetGroupName: !Sub "${PJPrefix}-${DBInstanceName}-subnet"
+      DBSubnetGroupDescription: "-"
+      SubnetIds: 
+        - !ImportValue "lecture10-clf-PrivateSubnet1id"
+        - !ImportValue "lecture10-clf-PrivateSubnet2id"
+
+# ------------------------------------------------------------#
 #  DBInstance MySQLの作成
 # ------------------------------------------------------------#
 Resources:
@@ -81,15 +93,3 @@ Resources:
         - Key: "Name"
           Value: !Ref DBInstanceName
     DeletionPolicy: "Delete"
-
-# ------------------------------------------------------------#
-#  DBSubnetGroup
-# ------------------------------------------------------------#
-  DBSubnetGroup: 
-    Type: "AWS::RDS::DBSubnetGroup"
-    Properties: 
-      DBSubnetGroupName: !Sub "${PJPrefix}-${DBInstanceName}-subnet"
-      DBSubnetGroupDescription: "-"
-      SubnetIds: 
-        - !ImportValue "lecture10-clf-PrivateSubnet1id"
-        - !ImportValue "lecture10-clf-PrivateSubnet2id"
