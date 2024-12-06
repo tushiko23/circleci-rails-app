@@ -10,13 +10,13 @@ filters:
   instance-type: t2.micro
   key-name: test-key
   tag:Name:  Ansible-test-TargetNodeEC2
-  tag:aws:cloudformation:stack-name: lecture13-sample2
+  tag:aws:cloudformation:stack-name: lecture13sample2
 
 # 複数のインスタンスが稼働している場合に、グループで取得したい場合に設定  
 #keyed_groups:
-# - key: tags.Name
-# - key: tags.aws:cloudformation:stack-name
-# - key: instance_type
+#  - key: tags.Name
+#  - key: tags.aws:cloudformation:stack-name
+#  - key: instance_type
 #  prefix: tagname_
 #  separator: ""
 
