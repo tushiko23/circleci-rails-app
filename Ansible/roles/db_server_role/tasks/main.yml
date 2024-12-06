@@ -11,11 +11,11 @@
     regexp: "  password:"
     insertafter: "^\\s username: root*:*$"
 
-- name: Change username on my database.yml line 
+ - name: Change username on my database.yml line
   lineinfile:
     path: "/home/ec2-user/raisetech-live8-sample-app/config/database.yml"
     state: present
-    line: "  username: admin"
+    line: "  username: {{ rds_master_user }}"
     regexp: "  username: root"
     insertafter: "^\\s*pool:*$"
 
@@ -23,17 +23,16 @@
   lineinfile:
     path: "/home/ec2-user/raisetech-live8-sample-app/config/database.yml"
     state: present
-    line: "  host: rails-app-project-rds.cdisayw68dw6.ap-northeast-1.rds.amazonaws.com"
-      #regexp: "    password:"  
+    line: "  host: {{ rds_end_point }}"
     insertafter: "^\\s*username: admin*$"
 
 - name: Change password on my database.yml line
   lineinfile:
     path: "/home/ec2-user/raisetech-live8-sample-app/config/database.yml"
     state: present
-    line: "  password: pJhOqcfLh:|cHe[0{+e5u#4%<8Sm"
-    insertafter: "^\\s*host:\\s.*\\.ap-northeast-1\\.rds\\.amazonaws\\.com$"
-
+    line: "  password: {{ rds_password }}"
+    insertafter: "^\\s*host:\\s.*\\.ap-northeast-1.rds.amazonaws.com*$"
+      
 - name: Comment out "socket /tmp/mysql.sock" on my development environment
   lineinfile:
     path: "/home/ec2-user/raisetech-live8-sample-app/config/database.yml"

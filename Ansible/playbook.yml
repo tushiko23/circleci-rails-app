@@ -1,25 +1,36 @@
-- name: Deploy Rails application on AWS resource
-  hosts:
-    - ansible-target-node
+- name: Deploy Rails application on AWS resource using CloudFormation and Ansible and CircleCI 
+  hosts: all
+  gather_facts: false
   become: True
   become_user: ec2-user
 
+  vars:
+    ansible_user: ec2-user
+    ansible_ssh_private_key_file: ~/.ssh/test-key.pem   
+
+      #- name: Deploy Rails application on AWS resource
+      #  hosts:
+      #    - ansible-target-node
+      #  become: True
+      #  become_user: ec2-user
+
   roles:
-    - yum_packege_role 
-    - app_source_role 
-    - ruby_install_role
-    - bundler_install_role
-    - rails_install_role 
-    - node_install_role
-    - yarn_install_role
-    - webpack_install_role
-    - mysql_install_role
-    - db_server_role   
-    - image_magick_config_role 
-    - set_up_role
-    - web_server_role  
-    - app_server_role
-    - nginx_conf_role
-    - alb_config_hosts_role  
-    - s3_config_role
+    - ping_check_role
+      #- yum_packege_role 
+      #- app_source_role 
+      #- ruby_install_role
+      #- bundler_install_role
+      #- rails_install_role 
+      #- node_install_role
+      #- yarn_install_role
+      #- webpack_install_role
+      #- mysql_install_role
+      #- db_server_role   
+      #- image_magick_config_role 
+      #- set_up_role
+      #- web_server_role  
+      #- app_server_role
+      #- nginx_conf_role
+      #- alb_config_hosts_role  
+      #- s3_config_role
   
