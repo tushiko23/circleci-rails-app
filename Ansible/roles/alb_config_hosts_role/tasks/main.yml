@@ -1,9 +1,9 @@
-- name: Change username on my database.yml line 
+- name: Add line ALB dns config_hosts on my development environments
   lineinfile:
     path: "/home/ec2-user/raisetech-live8-sample-app/config/environments/development.rb"
     state: present
-    line: 'config.hosts << "anasible-test-1862325162.ap-northeast-1.elb.amazonaws.com"'
-    insertafter: "^# Settings specified here will take precedence over those in config/application.rb.$"
+    line: 'config.hosts << "{{ alb_dnsname }}"'
+    insertafter: "^\\s*#\\s*Settings specified here will take precedence over those in config/application.rb.*$"
 
 - name: Retart puma service
   service:
