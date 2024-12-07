@@ -3,4 +3,5 @@ Host target
    IdentityFile ~/.ssh/serverspec_test_key
    User ec2-user
    ServerAliveInterval 30
-
+   StrictHostKeyChecking no
+   PasswordAuthentication no
