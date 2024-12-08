@@ -8,7 +8,7 @@ jobs:
       - run: python --version
       - add_ssh_keys:
           fingerprints:
-            - "${FINGER_PRINT}"
+            - "${KEY_FINGERPRINT}"
 
 workflows:
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
