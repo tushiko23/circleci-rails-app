@@ -17,8 +17,7 @@ jobs:
     executor: aws-cli/default
     steps:
       - checkout
-      - aws-cli/setup
-          # Configure default your own AWS Credentials
+      - aws-cli/setup:
           profile-name: default
           aws-access-key-id: $AWS_ACCESS_KEY_ID
           aws-secret-access-key: $AWS_SECRET_ACCESS_KEY
