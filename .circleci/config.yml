@@ -33,7 +33,8 @@ jobs:
             aws cloudformation deploy --stack-name ALB-Stack --template-file lecture13/project-4.yml
             aws cloudformation deploy --stack-name RDS-Stack --template-file lecture13/project-5.yml
             aws cloudformation deploy --stack-name S3Bucket-Stack --template-file lecture13/project-6.yml
-      
+            aws cloudformation wait stack-create-complete --stack-name RDS-Stack
+     
       - run:
           name: Get Dynamic Resources on AWS Ressources
           command: |
