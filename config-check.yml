@@ -28,33 +28,34 @@ jobs:
           name: create_stack_cloudformation
           command: |
             aws cloudformation deploy --stack-name NetWork-Stack --template-file lecture13/project-1.yml
-            aws cloudformation deploy --stack-name SecurityGroup-Stack --template-file lecture13/project-2.yml  --parameter-overrides SgIngCidrIpSSH=$MY_IP
+            aws cloudformation deploy --stack-name SecurityGroup-Stack --template-file lecture13/project-2.yml  --parameter-overrides SgIngCidrIpSSH=$MY_IP 
             aws cloudformation deploy --stack-name EC2-Stack --template-file lecture13/project-3.yml  --parameter-overrides KeyPairName=$KEY_PAIR_NAME --capabilities CAPABILITY_NAMED_IAM
             aws cloudformation deploy --stack-name ALB-Stack --template-file lecture13/project-4.yml
             aws cloudformation deploy --stack-name RDS-Stack --template-file lecture13/project-5.yml
             aws cloudformation deploy --stack-name S3Bucket-Stack --template-file lecture13/project-6.yml
-      
+       
       - run:
           name: Get Dynamic Resources on AWS Ressources
           command: |
-            EC2_Public_IP_Address=$(aws ec2 describe-instances --filters "Name=tag:aws:cloudformation:stack-name,Values=EC2-Stack" --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
+            # Get EC2 Public IP Address specified cloudformation stack-name tag
+            EC2_Public_IP_Address=$(aws ec2 describe-instances --filters "Name=tag:aws:cloudformation:stack-name,Values=EC2-Stack" --query "Reservations[*].Instances[*].PublicIpAddress" --output text)     
+　　　　　　# Get RDS Master User Name specified db-instance-identifier
             RDS_MASTER_USER=$(aws rds describe-db-instances --db-instance-identifier "rails-app-project-rds" --query "DBInstances[].[MasterUsername]" --output text)
-            RDS_END_POINT=$(aws rds describe-db-instances --db-instance-identifier "rails-app-project-rds" --query "DBInstances[].[Endpoint.Address]" --output text)
+            # Get RDS EndPoint specified db-instance-identifier
+            RDS_END_POINT=$(aws rds describe-db-instances --db-instance-identifier "rails-app-project-rds" --query "DBInstances[].[Endpoint.Address]" --output text) 
+            # Get RDS PassWord specified SecretManagerID and configured tag
             SECRETS_MANAGER_NAME=$(aws secretsmanager list-secrets --filters "Key=tag-key,Values=Name" "Key=tag-value,Values=Rails-app-Project" --query "SecretList[].[Name]" --output text)
             RDS_PASSWORD=$(aws secretsmanager get-secret-value --secret-id "$SECRETS_MANAGER_NAME" --query "SecretString" --output text | jq -r '.password')
+            # Get ALB DNS Name specified ALB Name
             ALB_DNSNAME=$(aws elbv2 describe-load-balancers --query "LoadBalancers[].[DNSName]" --names "Rails-Project-alb" --output text)
-      
-      - run:      
-          name: Check Outputs
-          command: |
+            # Check Outputs
             echo "$EC2_Public_IP_Address"
             echo "$RDS_MASTER_USER"
             echo "$RDS_END_POINT"
             echo "RDS_PASSWORD"
-            echo "$ALB_DNSNAME"
-
+            echo "$ALB_DNSNAME" 
 workflows:
-  Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
+  Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec :
     jobs:
       - cfn-lint
       - execute_cfn:
