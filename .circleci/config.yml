@@ -2,6 +2,8 @@ version: 2.1
 orbs:
   python: circleci/python@2.0.3
   aws-cli: circleci/aws-cli@5.1
+  ansible-playbook: orbss/ansible-playbook@0.0.5
+
 jobs:
   cfn-lint:
     executor: python/default
@@ -11,6 +13,7 @@ jobs:
       - run:
           name: run cfn-lint
           command: |
+            set -x
             cfn-lint -i W3002 -t lecture13/*.yml
 
   execute_cfn:
@@ -57,14 +60,18 @@ jobs:
           paths: 
             - var_environments.txt
 
-  check-install-python-pip:
-    docker:
-      - image: cimg/python:3.11.2
-    steps:
+  exucute_ansible:
+    executor: ansible-playbook/default
+    steps: 
       - checkout
-      - run: python --version
-      - run: pip    --version
-
+      - run: 
+          name: Check version python and pip
+          command: |
+            python --version
+            pip    --version
+      - ansible-playbook/install
+        version 2.18.0
+  
 workflows:
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
     jobs:
@@ -72,6 +79,6 @@ workflows:
       - execute_cfn:
           requires:
             - cfn-lint
-      - check-install-python-pip:
+      - exucute_ansible:
           requires:
             - execute_cfn
