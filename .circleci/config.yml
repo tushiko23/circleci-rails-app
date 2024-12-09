@@ -47,7 +47,7 @@ jobs:
             echo export  "EC2_Public_IP_Address=$EC2_Public_IP_Address" >> var_environments.txt
             echo export  "RDS_MASTER_USER=$RDS_MASTER_USER" >> var_environments.txt
             echo export "RDS_END_POINT=$RDS_END_POINT" >> var_environments.txt
-            echo export "RDS_PASSWORD=$RDS_PASSWORD" >> var_environments.txt
+            echo export "RDS_PASSWORD='$RDS_PASSWORD'" >> var_environments.txt
             echo export "ALB_DNSNAME=$ALB_DNSNAME" >> var_environments.txt
             source "var_environments.txt"
             cat "var_environments.txt"
