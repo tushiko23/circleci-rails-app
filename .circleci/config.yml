@@ -70,7 +70,7 @@ jobs:
             python --version
             pip    --version
       - ansible-playbook/install: 
-          version 2.18.0
+          version: 2.18.0
        
 workflows:
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
