@@ -47,18 +47,26 @@ jobs:
       - run:      
           name: Check Outputs to file
           command: |
-            echo "$EC2_Public_IP_Address" >> var_environments.txt
-            echo "$RDS_MASTER_USER" >> var_environments.txt
-            echo "$RDS_END_POINT" >> var_environments.txt
-            echo "RDS_PASSWORD" >> var_environments.txt
-            echo "$ALB_DNSNAME" >> var_environments.txt
+            echo "EC2_Public_IP_Address=$EC2_Public_IP_Address" >> var_environments.txt
+            echo "RDS_MASTER_USER=$RDS_MASTER_USER" >> var_environments.txt
+            echo "RDS_END_POINT=$RDS_END_POINT" >> var_environments.txt
+            echo "RDS_PASSWORD=$RDS_PASSWORD" >> var_environments.txt
+            echo "$ALB_DNSNAME=$ALB_DNSNAME" >> var_environments.txt
   
       - persist_to_workspace:
           root: .
           paths: 
             - var_environments.txt
-      
-      - run: cat var_environments.txt
+      - run:
+          name: Load Outputs from File
+          command: |
+            source var_environment.txt
+            echo "EC2_Public_IP_Address: $EC2_Public_IP_Address"
+            echo "RDS_MASTER_USER: $RDS_MASTER_USER"
+            echo "RDS_END_POINT: $RDS_END_POINT"
+            echo "SECRETS_MANAGER_NAME: $SECRETS_MANAGER_NAME"
+            echo "RDS_PASSWORD: $RDS_PASSWORD"
+            echo "ALB_DNSNAME: $ALB_DNSNAME"
 
   check-install-python-pip:
     docker:
