@@ -44,13 +44,13 @@ jobs:
             SECRETS_MANAGER_NAME=$(aws secretsmanager list-secrets --filters "Key=tag-key,Values=Name" "Key=tag-value,Values=Rails-app-Project" --query "SecretList[].[Name]" --output text)
             RDS_PASSWORD=$(aws secretsmanager get-secret-value --secret-id "$SECRETS_MANAGER_NAME" --query "SecretString" --output text | jq -r '.password')
             ALB_DNSNAME=$(aws elbv2 describe-load-balancers --query "LoadBalancers[].[DNSName]" --names "Rails-Project-alb" --output text)
-            echo export "$EC2_Public_IP_Address" >> var_environments.txt
-            echo export "$RDS_MASTER_USER" >> var_environments.txt
-            echo export "$RDS_END_POINT" >> var_environments.txt
-            echo export "$RDS_PASSWORD" >> var_environments.txt
-            echo export "$ALB_DNSNAME" >> var_environments.txt
+            echo  "$EC2_Public_IP_Address" >> var_environments.txt
+            echo  "$RDS_MASTER_USER" >> var_environments.txt
+            echo  "$RDS_END_POINT" >> var_environments.txt
+            echo  "$RDS_PASSWORD" >> var_environments.txt
+            echo  "$ALB_DNSNAME" >> var_environments.txt
             source "var_environments.txt"
-            pwd
+            cat "var_environments.txt"
 
       - persist_to_workspace:
           root: .
