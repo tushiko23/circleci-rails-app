@@ -47,7 +47,7 @@ jobs:
             echo "RDS_MASTER_USER=$RDS_MASTER_USER" >> var_environments.txt
             echo "RDS_END_POINT=$RDS_END_POINT" >> var_environments.txt
             echo "RDS_PASSWORD=$RDS_PASSWORD" >> var_environments.txt
-            echo "$ALB_DNSNAME=$ALB_DNSNAME" >> var_environments.txt
+            echo "ALB_DNSNAME=$ALB_DNSNAME" >> var_environments.txt
             source "var_environments.txt"
             cat "var_environments.txt"
 
