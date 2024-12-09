@@ -50,7 +50,7 @@ jobs:
             echo export "$RDS_PASSWORD" >> var_environments.txt
             echo export "$ALB_DNSNAME" >> var_environments.txt
             source "var_environments.txt"
-            cat "var_environments.txt"
+            pwd
 
       - persist_to_workspace:
           root: .
