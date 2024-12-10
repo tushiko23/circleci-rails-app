@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
-  python: circleci/python@2.0.3
-  aws-cli: circleci/aws-cli@5.1
+  python: cmg/python@2.0.3
+  aws-cli: cmg/aws-cli@5.1
   ansible-playbook: orbss/ansible-playbook@0.0.5
 
 jobs:
@@ -70,7 +70,8 @@ jobs:
             python --version
             pip    --version
       - ansible-playbook/install: 
-          version: 2.10.7
+          version: 2.10.8
+          ansible --version
       - run: 
           name: Set up aws ec2 plugin
           command: |
