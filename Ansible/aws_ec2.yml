@@ -3,14 +3,14 @@ regions: ap-northeast-1
 
 # フィルタの設定
 # "起動している"かつ"t2.micro"かつ"キーペア名test-keyを使用している" EC2インスタンスのみを対象
-# tagの値が"Ansible-test-TargetNodeEC2"のインスタンスのみを対象"
-# 本番環境ではcloudformationのスタック名のタグも指定する
+# tagの値が自身でで設定したタグ"'Rails-app-Project'のインスタンスのみを対象"
+# cloudformationのスタック名のタグも指定する
 filters: 
   instance-state-name: running
   instance-type: t2.micro
-  key-name: test-key
-  tag:Name:  Ansible-test-TargetNodeEC2
-  tag:aws:cloudformation:stack-name: lecture13sample2
+  key-name:  ansible_test_key
+  tag:Name: Rails-app-Project
+  tag:aws:cloudformation:stack-name: EC2-Stack
 
 # 複数のインスタンスが稼働している場合に、グループで取得したい場合に設定  
 #keyed_groups:
