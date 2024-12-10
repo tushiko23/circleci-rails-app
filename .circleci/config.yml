@@ -71,11 +71,11 @@ jobs:
             pip    --version
       - ansible-playbook/install: 
           version: 2.10.8
-          ansible --version
       - run: 
           name: Set up aws ec2 plugin
           command: |
             set -x
+            ansible --version
             ansible-galaxy collection install amazon.aws
             pip install boto3 botocore 
       
