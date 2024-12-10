@@ -77,7 +77,12 @@ jobs:
             set -x
             ansible-galaxy collection install amazon.aws
             pip install boto3 botocore 
-            ansible-inventory -i Ansible/aws_ec2.yml --graph
+      
+      - run:
+          name: Ansible dynamic inventory set up
+          command: |
+            cd Ansible
+            ansible-inventory -i aws_ec2.yml --graph
 
 workflows:
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
