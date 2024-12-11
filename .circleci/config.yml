@@ -70,7 +70,7 @@ jobs:
             python --version
             pip    --version
       - ansible-playbook/install: 
-          version: 2.10.7
+          version: 2.12.0
       - run: 
           name: Set up aws ec2 plugin
           command: |
@@ -82,7 +82,9 @@ jobs:
       - run:
           name: Ansible dynamic inventory set up
           command: |
+            set -x
             cd Ansible
+            ls aws_ec2.yml
             ansible-inventory -i aws_ec2.yml --graph
 
 workflows:
