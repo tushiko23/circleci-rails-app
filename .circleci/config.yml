@@ -71,24 +71,14 @@ jobs:
           name: Check version python and pip
           command: |
             python --version
-            pip    --version
-      - run: 
-          name: Set up aws ec2 plugin
-          command: |
-            set -x
-            python -m pip install --upgrade pip
-            pip install ansible==2.12.0
-            ansible --version
-            ansible-galaxy collection install amazon.aws
-            pip install boto3 botocore 
-      
+            pip    --version      
       - run:
           name: Ansible dynamic inventory set up
           command: |
             set -x
             cd Ansible
             ls aws_ec2.yml
-            ansible-inventory -i aws_ec2.yml --graph
+            pwd
 
 workflows:
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
