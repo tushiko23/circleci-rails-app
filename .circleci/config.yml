@@ -63,7 +63,7 @@ jobs:
   exucute_ansible:
     executor: 
       name: python/default
-      tag: "3.13.1"
+      tag: "2.7.18"
     
     steps: 
       - checkout
