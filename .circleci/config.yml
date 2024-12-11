@@ -72,6 +72,8 @@ jobs:
           command: |
             python --version
             pip    --version      
+      - ansible-playbook/install: 
+          version: 2.9.23
       - run:
           name: Ansible dynamic inventory set up 1
           command: |
@@ -84,7 +86,6 @@ jobs:
           command: |
             set -x
             ansible-galaxy collection install amazon.aws
-            ansible-galaxy collection list | grep amazon.aws
  
 workflows:
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
