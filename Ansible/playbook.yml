@@ -16,7 +16,7 @@
 
   roles:
     - ping_check_role
-      #- yum_packege_role 
+    - yum_packege_role 
       #- app_source_role 
       #- ruby_install_role
       #- bundler_install_role
