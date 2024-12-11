@@ -18,7 +18,7 @@
     - ping_check_role
     - yum_packege_role 
     - app_source_role 
-      #- ruby_install_role
+    - ruby_install_role
       #- bundler_install_role
       #- rails_install_role 
       #- node_install_role
