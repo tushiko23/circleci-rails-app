@@ -93,6 +93,13 @@ jobs:
             pip install boto3
             pip install botocore
             pip list | grep boto
+       
+      - run:
+          name: Get EC2-PublicIP from dynamic inventory
+          command: |
+            set -x
+            pwd
+            ansible-inventory -i aws_ec2.yml --graph
 
 workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
