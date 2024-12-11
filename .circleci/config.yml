@@ -101,7 +101,7 @@ jobs:
             pwd
             cd Ansible
             ansible-inventory -i aws_ec2.yml --graph
-
+             
 workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
     jobs:
