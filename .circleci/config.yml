@@ -73,13 +73,19 @@ jobs:
             python --version
             pip    --version      
       - run:
-          name: Ansible dynamic inventory set up
+          name: Ansible dynamic inventory set up 1
           command: |
             set -x
             cd Ansible
             ls aws_ec2.yml
             pwd
-
+      - run:
+          name: Ansible dynamic inventory set up 2
+          command: |
+            set -x
+            ansible-galaxy collection install amazon.aws
+            ansible-galaxy collection list | grep amazon.aws
+ 
 workflows:
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
     jobs:
