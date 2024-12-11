@@ -67,6 +67,9 @@ jobs:
     
     steps: 
       - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:gqs/3tIho0hvNAc4b9bslkvWOCuNzfZCedQoi2MMmwQ"
       - run: 
           name: Check version python and pip
           command: |
@@ -101,13 +104,7 @@ jobs:
             pwd
             cd Ansible
             ansible-inventory -i aws_ec2.yml --graph
-      
-      - ansible-playbook/playbook: 
-          inventory: Ansible/aws_ec2.yml
-          playbook: Ansible/playbook.yml
-          playbook-options: -u ec2-user 
-          private-key: $ANSIBLE_SSH_KEY
-             
+                   
 workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
     jobs:
