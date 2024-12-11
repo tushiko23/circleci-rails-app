@@ -118,4 +118,4 @@ workflows:
             - cfn-lint
       - exucute_ansible:
           requires:
-            - execute_cfn:
+            - execute_cfn
