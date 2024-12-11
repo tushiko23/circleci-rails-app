@@ -99,6 +99,7 @@ jobs:
           command: |
             set -x
             pwd
+            cd Ansible
             ansible-inventory -i aws_ec2.yml --graph
 
 workflows: 
