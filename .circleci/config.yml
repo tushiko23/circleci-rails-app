@@ -86,8 +86,15 @@ jobs:
           command: |
             set -x
             ansible-galaxy collection install amazon.aws
- 
-workflows:
+      - run:
+          name: Ansible dynamic inventory set up 3
+          command: |
+            set -x
+            pip install boto3
+            pip install botocore
+            pip list | grep boto
+
+workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
     jobs:
       - cfn-lint
