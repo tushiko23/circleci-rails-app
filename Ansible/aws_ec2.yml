@@ -12,16 +12,7 @@ filters:
   tag:Name: Rails-app-Project
   tag:aws:cloudformation:stack-name: EC2-Stack
 
-# 複数のインスタンスが稼働している場合に、グループで取得したい場合に設定  
-#keyed_groups:
-#  - key: tags.Name
-#  - key: tags.aws:cloudformation:stack-name
-#  - key: instance_type
-#  prefix: tagname_
-#  separator: ""
-
 # 取得したい値を設定(上から順)
 hostnames:
-  - ip-address # パブリックIPv4アドレス
-  #  - private-ip-address
+  - ip-address
 
