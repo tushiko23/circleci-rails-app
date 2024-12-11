@@ -2,6 +2,8 @@ version: 2.1
 orbs:
   python: circleci/python@2.0.3
   aws-cli: circleci/aws-cli@5.1
+  ansible-playbook: orbss/ansible-playbook@0.0.5
+
 jobs:
   cfn-lint:
     executor: python/default
@@ -11,6 +13,7 @@ jobs:
       - run:
           name: run cfn-lint
           command: |
+            set -x
             cfn-lint -i W3002 -t lecture13/*.yml
 
   execute_cfn:
@@ -57,21 +60,55 @@ jobs:
           paths: 
             - var_environments.txt
 
-  check-install-python-pip:
-    docker:
-      - image: cimg/python:3.11.2
-    steps:
+  exucute_ansible:
+    executor: 
+      name: python/default
+      tag: "2.7.18"
+    
+    steps: 
       - checkout
-      - run: python --version
-      - run: pip    --version
+      - run: 
+          name: Check version python and pip
+          command: |
+            python --version
+            pip    --version      
+      - ansible-playbook/install: 
+          version: 2.9.23
+      - run:
+          name: Ansible dynamic inventory set up 1
+          command: |
+            set -x
+            cd Ansible
+            ls aws_ec2.yml
+            pwd
+      - run:
+          name: Ansible dynamic inventory set up 2
+          command: |
+            set -x
+            ansible-galaxy collection install amazon.aws
+      - run:
+          name: Ansible dynamic inventory set up 3
+          command: |
+            set -x
+            pip install boto3
+            pip install botocore
+            pip list | grep boto
+       
+      - run:
+          name: Get EC2-PublicIP from dynamic inventory
+          command: |
+            set -x
+            pwd
+            cd Ansible
+            ansible-inventory -i aws_ec2.yml --graph
 
-workflows:
+workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
     jobs:
       - cfn-lint
       - execute_cfn:
           requires:
             - cfn-lint
-      - check-install-python-pip:
+      - exucute_ansible:
           requires:
             - execute_cfn
