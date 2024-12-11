@@ -61,7 +61,10 @@ jobs:
             - var_environments.txt
 
   exucute_ansible:
-    executor: ansible-playbook/default
+    executor: 
+      name: python/default
+      tag: "3.13.1"
+    
     steps: 
       - checkout
       - run: 
