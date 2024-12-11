@@ -1,0 +1,121 @@
+version: 2.1
+orbs:
+  python: circleci/python@2.0.3
+  aws-cli: circleci/aws-cli@5.1
+  ansible-playbook: orbss/ansible-playbook@0.0.5
+
+jobs:
+  cfn-lint:
+    executor: python/default
+    steps:
+      - checkout
+      - run: pip install cfn-lint
+      - run:
+          name: run cfn-lint
+          command: |
+            set -x
+            cfn-lint -i W3002 -t lecture13/*.yml
+
+  execute_cfn:
+    executor: aws-cli/default
+    steps:
+      - checkout
+      - aws-cli/setup:
+          profile_name: default
+          aws_access_key_id: $AWS_ACCESS_KEY_ID
+          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
+          region: $AWS_DEFAULT_REGION
+      
+      - run:
+          name: create_stack_cloudformation
+          command: |
+            aws cloudformation deploy --stack-name NetWork-Stack --template-file lecture13/project-1.yml
+            aws cloudformation deploy --stack-name SecurityGroup-Stack --template-file lecture13/project-2.yml  --parameter-overrides SgIngCidrIpSSH=$MY_IP
+            aws cloudformation deploy --stack-name EC2-Stack --template-file lecture13/project-3.yml  --parameter-overrides KeyPairName=$KEY_PAIR_NAME --capabilities CAPABILITY_NAMED_IAM
+            aws cloudformation deploy --stack-name ALB-Stack --template-file lecture13/project-4.yml
+            aws cloudformation deploy --stack-name RDS-Stack --template-file lecture13/project-5.yml
+            aws cloudformation deploy --stack-name S3Bucket-Stack --template-file lecture13/project-6.yml
+            aws cloudformation wait stack-create-complete --stack-name RDS-Stack
+     
+      - run:
+          name: Get Dynamic Resources on AWS Ressources
+          command: |
+            set -x
+            EC2_Public_IP_Address=$(aws ec2 describe-instances --filters "Name=tag:aws:cloudformation:stack-name,Values=EC2-Stack" --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
+            RDS_MASTER_USER=$(aws rds describe-db-instances --db-instance-identifier "rails-app-project-rds" --query "DBInstances[].[MasterUsername]" --output text)
+            RDS_END_POINT=$(aws rds describe-db-instances --db-instance-identifier "rails-app-project-rds" --query "DBInstances[].[Endpoint.Address]" --output text)
+            SECRETS_MANAGER_NAME=$(aws secretsmanager list-secrets --filters "Key=tag-key,Values=Name" "Key=tag-value,Values=Rails-app-Project" --query "SecretList[].[Name]" --output text)
+            RDS_PASSWORD=$(aws secretsmanager get-secret-value --secret-id "$SECRETS_MANAGER_NAME" --query "SecretString" --output text | jq -r '.password')
+            ALB_DNSNAME=$(aws elbv2 describe-load-balancers --query "LoadBalancers[].[DNSName]" --names "Rails-Project-alb" --output text)
+            echo export  "EC2_Public_IP_Address=$EC2_Public_IP_Address" >> var_environments.txt
+            echo export  "RDS_MASTER_USER=$RDS_MASTER_USER" >> var_environments.txt
+            echo export "RDS_END_POINT=$RDS_END_POINT" >> var_environments.txt
+            echo export "RDS_PASSWORD='$RDS_PASSWORD'" >> var_environments.txt
+            echo export "ALB_DNSNAME=$ALB_DNSNAME" >> var_environments.txt
+            source "var_environments.txt"
+            cat "var_environments.txt"
+
+      - persist_to_workspace:
+          root: .
+          paths: 
+            - var_environments.txt
+
+  exucute_ansible:
+    executor: 
+      name: python/default
+      tag: "2.7.18"
+    
+    steps: 
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:gqs/3tIho0hvNAc4b9bslkvWOCuNzfZCedQoi2MMmwQ"
+      - run: 
+          name: Check version python and pip
+          command: |
+            python --version
+            pip    --version      
+      - ansible-playbook/install: 
+          version: 2.9.23
+      - run:
+          name: Ansible dynamic inventory set up 1
+          command: |
+            set -x
+            cd Ansible
+            ls aws_ec2.yml
+            pwd
+      - run:
+          name: Ansible dynamic inventory set up 2
+          command: |
+            set -x
+            ansible-galaxy collection install amazon.aws
+      - run:
+          name: Ansible dynamic inventory set up 3
+          command: |
+            set -x
+            pip install boto3
+            pip install botocore
+            pip list | grep boto
+       
+      - run:
+          name: Get EC2-PublicIP from dynamic inventory
+          command: |
+            set -x
+            pwd
+            cd Ansible
+            ansible-inventory -i aws_ec2.yml --graph
+       
+      - ansible-playbook/playbook:
+          playbook: Ansible/playbook.yml
+          playbook-options: -u ec2-user -i Ansible/aws_ec2.yml --private-key ~/.ssh/id_rsa            
+
+workflows: 
+  Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
+    jobs:
+      - cfn-lint
+      - execute_cfn:
+          requires:
+            - cfn-lint
+      - exucute_ansible:
+          requires:
+            - execute_cfn:
