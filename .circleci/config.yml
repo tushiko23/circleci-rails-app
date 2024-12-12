@@ -104,10 +104,6 @@ jobs:
             pwd
             cd Ansible
             ansible-inventory -i aws_ec2.yml --graph
-       
-      - ansible-playbook/playbook:
-          playbook: Ansible/playbook.yml
-          playbook-options: -u ec2-user -i Ansible/aws_ec2.yml --private-key ~/.ssh/id_rsa            
       
       - attach_workspace:
           at: Ansible/
@@ -116,10 +112,14 @@ jobs:
           name: Check Ansible/vars.yml on project current directory
           command: |
             set -x
-            pwd 
-            ls 
+            pwd
+            ls
             ls -la Ansible/
-
+ 
+      - ansible-playbook/playbook:
+          playbook: Ansible/playbook.yml
+          playbook-options: -u ec2-user -i Ansible/aws_ec2.yml --private-key ~/.ssh/id_rsa            
+      
 workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
     jobs:
