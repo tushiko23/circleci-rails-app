@@ -50,7 +50,7 @@ jobs:
             # echo "EC2_Public_IP_Address: $EC2_Public_IP_Address" >> Ansible/vars.yml
             echo "rds_master_user: $RDS_MASTER_USER" >> Ansible/vars.yml
             echo "rds_end_point: $RDS_END_POINT" >> Ansible/vars.yml
-            echo "rds_password: '$RDS_PASSWORD'" >> Ansible/vars.yml
+            echo "rds_password: \"'${RDS_PASSWORD}'\"" >> Ansible/vars.yml
             echo "alb_dnsname: $ALB_DNSNAME" >> Ansible/vars.yml
             cat "Ansible/vars.yml"
 
