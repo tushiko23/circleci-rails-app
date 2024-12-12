@@ -52,7 +52,6 @@ jobs:
             echo "rds_end_point: $RDS_END_POINT" >> Ansible/vars.yml
             echo "rds_password: '$RDS_PASSWORD'" >> Ansible/vars.yml
             echo "alb_dnsname: $ALB_DNSNAME" >> Ansible/vars.yml
-            source "Ansible/vars.yml"
             cat "Ansible/vars.yml"
 
       - persist_to_workspace:
