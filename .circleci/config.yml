@@ -47,18 +47,18 @@ jobs:
             SECRETS_MANAGER_NAME=$(aws secretsmanager list-secrets --filters "Key=tag-key,Values=Name" "Key=tag-value,Values=Rails-app-Project" --query "SecretList[].[Name]" --output text)
             RDS_PASSWORD=$(aws secretsmanager get-secret-value --secret-id "$SECRETS_MANAGER_NAME" --query "SecretString" --output text | jq -r '.password')
             ALB_DNSNAME=$(aws elbv2 describe-load-balancers --query "LoadBalancers[].[DNSName]" --names "Rails-Project-alb" --output text)
-            echo export  "EC2_Public_IP_Address=$EC2_Public_IP_Address" >> var_environments.txt
-            echo export  "RDS_MASTER_USER=$RDS_MASTER_USER" >> var_environments.txt
-            echo export "RDS_END_POINT=$RDS_END_POINT" >> var_environments.txt
-            echo export "RDS_PASSWORD='$RDS_PASSWORD'" >> var_environments.txt
-            echo export "ALB_DNSNAME=$ALB_DNSNAME" >> var_environments.txt
-            source "var_environments.txt"
-            cat "var_environments.txt"
+            # echo export  "EC2_Public_IP_Address=$EC2_Public_IP_Address" >> Ansible/vars.yml
+            echo "RDS_MASTER_USER=$RDS_MASTER_USER" >> Ansible/vars.yml
+            echo "RDS_END_POINT=$RDS_END_POINT" >> Ansible/vars.yml
+            echo "RDS_PASSWORD='$RDS_PASSWORD'" >> Ansible/vars.yml
+            echo "ALB_DNSNAME=$ALB_DNSNAME" >> Ansible/vars.yml
+            source "Ansible/vars.yml"
+            cat "Ansible/vars.yml"
 
       - persist_to_workspace:
-          root: .
+          root: Ansible/
           paths: 
-            - var_environments.txt
+            - vars.yml
 
   exucute_ansible:
     executor: 
@@ -110,15 +110,15 @@ jobs:
           playbook-options: -u ec2-user -i Ansible/aws_ec2.yml --private-key ~/.ssh/id_rsa            
       
       - attach_workspace:
-          at: .
+          at: Ansible/
 
       - run:
-          name: Check var_environments.txt on project current directory
+          name: Check Ansible/vars.yml on project current directory
           command: |
             set -x
             pwd 
-            ls var_environments.txt
-            ls -la
+            ls 
+            ls -la Ansible/
 
 workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
