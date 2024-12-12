@@ -1,4 +1,11 @@
+- name: Check if raisetech-live8-sample-app is cloned on my EC2
+  shell: ls -l | grep  "raisetech-live8-sample-app"
+  register: app_exists_check
+  ignore_errors: true
+      
 - name: Clone Rails app source code
   git:  
     repo: https://github.com/yuta-ushijima/raisetech-live8-sample-app.git
     dest: /home/ec2-user/raisetech-live8-sample-app
+  when: app_exists_check.rc != 0
+
