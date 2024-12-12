@@ -109,6 +109,14 @@ jobs:
           playbook: Ansible/playbook.yml
           playbook-options: -u ec2-user -i Ansible/aws_ec2.yml --private-key ~/.ssh/id_rsa            
 
+      - run:
+          name: Check var_environments.txt on project current directory
+          command: |
+            set -x
+            pwd 
+            ls var_environments.txt
+            ls -la
+
 workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
     jobs:

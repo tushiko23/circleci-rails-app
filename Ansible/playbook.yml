@@ -26,7 +26,7 @@
     - webpack_install_role
     - mysql_install_role
       #- db_server_role   
-      #- image_magick_config_role 
+    - image_magick_config_role 
       #- set_up_role
       #- web_server_role  
       #- app_server_role
