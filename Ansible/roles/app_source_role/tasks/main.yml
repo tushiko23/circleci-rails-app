@@ -1,5 +1,5 @@
 - name: Check if raisetech-live8-sample-app is cloned on my EC2
-  command: ls -l | grep  "raisetech-live8-sample-app"
+  shell: ls -l | grep  "raisetech-live8-sample-app"
   register: app_exists_check
   ignore_errors: true
       
