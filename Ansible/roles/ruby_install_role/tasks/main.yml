@@ -33,8 +33,8 @@
   shell: bash -lc "/home/ec2-user/.rbenv/bin/rbenv install 3.2.3"
   vars:
     ansible_command_timeout: 1800
-  when: ruby_check.rc != 0
+  when: ruby_install_check.rc != 0
 
 - name: Set global Ruby version to 3.2.3
   shell: bash -lc  "/home/ec2-user/.rbenv/bin/rbenv global 3.2.3" 
-  when: ruby_check.rc != 0
+  when: ruby_install_check.rc != 0
