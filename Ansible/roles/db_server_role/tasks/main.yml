@@ -1,3 +1,6 @@
+- name: Read external variable file
+  include_vars: "/home/circleci/project/Ansible/vars.yml"
+
 - name: Copy database.yml.sample to database.yml on Rails application
   copy: 
    remote_src: true
@@ -11,7 +14,7 @@
     regexp: "  password:"
     insertafter: "^\\s username: root*:*$"
 
- - name: Change username on my database.yml line
+- name: Change username on my database.yml line
   lineinfile:
     path: "/home/ec2-user/raisetech-live8-sample-app/config/database.yml"
     state: present

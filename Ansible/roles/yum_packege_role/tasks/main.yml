@@ -7,6 +7,7 @@
     name:
       - git
       - make
+      - gcc
       - gcc-c++
       - patch
       - libyaml-devel
