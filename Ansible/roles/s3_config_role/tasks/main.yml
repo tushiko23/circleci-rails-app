@@ -6,6 +6,12 @@
     regexp: "  config.active_storage.service = :local"  
     insertbefore:  "^\\s*#//s*Don't care if the mailer can't send.*$"
 
+- name: Check if the comment line already exists
+  shell: |
+    grep -q "# Store uploaded files on the Amazon s3 service" /home/ec2-user/raisetech-live8-sample-app/config/environments/development.rb
+  register: check_comment
+  ignore_errors: true
+
 - name: Comment in store uploaded files on the Amazon s3 service message and configration
   lineinfile:
     path: "/home/ec2-user/raisetech-live8-sample-app/config/environments/development.rb"
@@ -14,27 +20,16 @@
        # Store uploaded files on the Amazon s3 service (see config/storage.yml for options).
        config.active_storage.service = :amazon
     insertafter: "^\\s*# config.active_storage.service = :local*$"
+  when: check_comment.rc != 0
 
-- name: Add line AWS ACCESS KEY ID on config/storage.yml
+- name: Read external variable file
+  include_vars: "/home/circleci/project/Ansible/vars.yml"
+
+- name: Config my S3 bucket name
   lineinfile:
-    path: "/home/ec2-user/raisetech-live8-sample-app/config/storage.yml"
+    path: /home/ec2-user/.bash_profile
+    line: "export AWS_S3_BUCKET_NAME={{  s3_bucket_name }}"
     state: present
-    line: " access_key_id: <%= ENV['AWS_ACCESS_KEY_ID'] %>"
-    insertafter: "^\\s*bucket:.*$"
-
-- name: Add line AWS ACCESS KEY on config/storage.yml
-  lineinfile:
-    path: "/home/ec2-user/raisetech-live8-sample-app/config/storage.yml"
-    state: present
-    line: " secret_access_key:  <%= ENV['AWS_SECRET_ACCESS_KEY'] %>"
-    insertafter: "^\\s*access_key_id:.*$"
-
-- name: Copy AWS credientials and S3 bucket name on my target node
-  copy:
-    src: /home/ec2-user/.bash_profile
-    dest: /home/ec2-user/.bash_profile 
-    remote_src: false
-    follow: yes
 
 - name: Source bash profile
   shell: bash -lc  "source /home/ec2-user/.bash_profile"
