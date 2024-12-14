@@ -11,7 +11,7 @@ Parameters:
   S3BucketName: 
     Description: Type of this BucketName
     Type: String
-    Default: 
+    Default: "S3 Bucket Name" 
 
   #-----------------------------------------------------------------------------
   # S3 bucket
