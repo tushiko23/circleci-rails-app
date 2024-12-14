@@ -1,3 +1,6 @@
+- name: Read external variable file
+  include_vars: "/home/circleci/project/Ansible/vars.yml"
+
 - name: Add line ALB dns config_hosts on my development environments
   lineinfile:
     path: "/home/ec2-user/raisetech-live8-sample-app/config/environments/development.rb"
