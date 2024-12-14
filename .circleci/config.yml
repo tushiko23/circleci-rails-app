@@ -31,10 +31,10 @@ jobs:
           command: |
             aws cloudformation deploy --stack-name NetWork-Stack --template-file lecture13/project-1.yml
             aws cloudformation deploy --stack-name SecurityGroup-Stack --template-file lecture13/project-2.yml  --parameter-overrides SgIngCidrIpSSH=$MY_IP
-            aws cloudformation deploy --stack-name EC2-Stack --template-file lecture13/project-3.yml  --parameter-overrides KeyPairName=$KEY_PAIR_NAME --capabilities CAPABILITY_NAMED_IAM
+            aws cloudformation deploy --stack-name EC2-Stack --template-file lecture13/project-3.yml  --parameter-overrides KeyPairName=$KEY_PAIR_NAME S3BucketName=$S3_BUCKET_NAME --capabilities CAPABILITY_NAMED_IAM
             aws cloudformation deploy --stack-name ALB-Stack --template-file lecture13/project-4.yml
             aws cloudformation deploy --stack-name RDS-Stack --template-file lecture13/project-5.yml
-            aws cloudformation deploy --stack-name S3Bucket-Stack --template-file lecture13/project-6.yml
+            aws cloudformation deploy --stack-name S3Bucket-Stack --template-file lecture13/project-6.yml --parameter-overrides S3BucketName=$S3_BUCKET_NAME
             aws cloudformation wait stack-create-complete --stack-name RDS-Stack
      
       - run:

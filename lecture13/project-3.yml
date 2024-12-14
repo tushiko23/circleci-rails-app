@@ -35,7 +35,7 @@ Parameters:
   S3BucketName: 
     Description: Type of this BucketName
     Type: String
-    Default: rails-app-project-s3
+    Default: 
 
 #-----------------------------------------------------------------------------
 # IAM Role to access S3 Bucket and Session Manager
