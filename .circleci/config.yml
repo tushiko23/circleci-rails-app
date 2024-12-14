@@ -52,12 +52,14 @@ jobs:
             echo "rds_end_point: $RDS_END_POINT" >> Ansible/vars.yml
             echo "rds_password: \"'${RDS_PASSWORD}'\"" >> Ansible/vars.yml
             echo "alb_dnsname: $ALB_DNSNAME" >> Ansible/vars.yml
+            echo "s3_bucket_name: $S3_BUCKET_NAME" >> Ansible/vars.yml
             cat "Ansible/vars.yml"
-
+       
       - persist_to_workspace:
           root: Ansible/
           paths: 
             - vars.yml
+            - .credentials_vars.yml
 
   exucute_ansible:
     executor: 
