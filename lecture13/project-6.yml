@@ -11,7 +11,7 @@ Parameters:
   S3BucketName: 
     Description: Type of this BucketName
     Type: String
-    Default: "S3 Bucket Name" 
+    Default: "s3-bucket-name" 
 
   #-----------------------------------------------------------------------------
   # S3 bucket
@@ -20,7 +20,7 @@ Resources:
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref S3BucketName
+      BucketName: !Sub ${S3BucketName}
       LifecycleConfiguration:
         Rules:
           - Id: IntelligentTierRule
