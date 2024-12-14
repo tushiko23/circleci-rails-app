@@ -20,7 +20,7 @@ Resources:
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ${S3BucketName}
+      BucketName: !Ref S3BucketName
       LifecycleConfiguration:
         Rules:
           - Id: IntelligentTierRule
