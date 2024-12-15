@@ -36,6 +36,11 @@
     group: "ec2-user"
     mode: "775"
 
+- name: Set up assets precompile on development rails app
+  shell: bash -lc "RAILS_ENV=development bin/rails assets:precompile"
+  args:
+    chdir: /home/ec2-user/raisetech-live8-sample-app
+
 - name: Start puma service
   service:
     name: puma
