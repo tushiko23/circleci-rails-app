@@ -35,7 +35,7 @@
   shell: bash -lc  "source /home/ec2-user/.bash_profile"
   become: true
 
-- name: Retart puma service
+- name: Restart puma service
   service:
     name: puma
     state: restarted

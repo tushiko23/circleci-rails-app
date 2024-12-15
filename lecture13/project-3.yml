@@ -38,7 +38,7 @@ Parameters:
     Default: "s3-bucket-name" 
 
 #-----------------------------------------------------------------------------
-# IAM Role to access S3 Bucket and Session Manager
+# IAM Role to access S3 Bucket
 #-----------------------------------------------------------------------------
 Resources:  
   AccessRole:
@@ -83,50 +83,6 @@ Resources:
       Roles:
       - !Ref AccessRole
 
-  SSMAccessPolicies:
-    Type: AWS::IAM::ManagedPolicy
-    Properties:
-      ManagedPolicyName: "AmazonSSMManagedInstanceCore"
-      PolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Action:
-              - "ssm:DescribeAssociation"
-              - "ssm:GetDeployablePatchSnapshotForInstance"
-              - "ssm:GetDocument"
-              - "ssm:DescribeDocument"
-              - "ssm:GetManifest"
-              - "ssm:GetParameter"
-              - "ssm:GetParameters"
-              - "ssm:ListAssociations"
-              - "ssm:ListInstanceAssociations"
-              - "ssm:PutInventory"
-              - "ssm:PutComplianceItems"
-              - "ssm:PutConfigurePackageResult"
-              - "ssm:UpdateAssociationStatus"
-              - "ssm:UpdateInstanceAssociationStatus"
-              - "ssm:UpdateInstanceInformation"
-          Resource: "*"
-        - Effect: Allow
-          Action:
-              - "ssmmessages:CreateControlChannel"
-              - "ssmmessages:CreateDataChannel"
-              - "ssmmessages:OpenControlChannel"
-              - "ssmmessages:OpenDataChannel"
-          Resource: "*"
-        - Effect: Allow
-          Action:
-              - "ec2messages:AcknowledgeMessage"
-              - "ec2messages:DeleteMessage"
-              - "ec2messages:FailMessage"
-              - "ec2messages:GetEndpoint"
-              - "ec2messages:GetMessages"
-              - "ec2messages:SendReply"
-          Resource: "*"   
-      Roles:
-      - !Ref AccessRole
-
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -134,9 +90,9 @@ Resources:
       Roles:
       - !Ref AccessRole 
 
-  # ------------------------------------------------------------
-  #  EC2の作成
-  # ------------------------------------------------------------   
+# ------------------------------------------------------------
+#  EC2の作成
+# ------------------------------------------------------------   
   ProjectEC2:
     Type: AWS::EC2::Instance
     Properties:
@@ -159,9 +115,9 @@ Resources:
         - Key: Name
           Value: !Ref NameBase
 
-  # ------------------------------------------------------------
-  #  ElasticIPの作成&EC2にアタッチ
-  # ------------------------------------------------------------ 
+# ------------------------------------------------------------
+#  ElasticIPの作成&EC2にアタッチ
+# ------------------------------------------------------------ 
   ElasticIP:
     Type: "AWS::EC2::EIP"
     Properties:
@@ -186,3 +142,52 @@ Outputs:
   InstancePublicIp:
     Description: The public IP address of the EC2 instance
     Value: !GetAtt ProjectEC2.PublicIp
+
+#-------------------------------------------------------------------------------------------------------------
+# If you want to connect using Session Manager, please comment in this IAM Policy and attach IAM Role and EC2
+#-------------------------------------------------------------------------------------------------------------
+
+# SSMAccessPolicies:
+#    Type: AWS::IAM::ManagedPolicy
+#    Properties:
+#      ManagedPolicyName: "AmazonSSMManagedInstanceCore"
+#      PolicyDocument:
+#        Version: '2012-10-17'
+#        Statement:
+#        - Effect: Allow
+#          Action:
+#              - "ssm:DescribeAssociation"
+#              - "ssm:GetDeployablePatchSnapshotForInstance"
+#              - "ssm:GetDocument"
+#              - "ssm:DescribeDocument"
+#              - "ssm:GetManifest"
+#              - "ssm:GetParameter"
+#              - "ssm:GetParameters"
+#              - "ssm:ListAssociations"
+#              - "ssm:ListInstanceAssociations"
+#              - "ssm:PutInventory"
+#              - "ssm:PutComplianceItems"
+#              - "ssm:PutConfigurePackageResult"
+#              - "ssm:UpdateAssociationStatus"
+#              - "ssm:UpdateInstanceAssociationStatus"
+#              - "ssm:UpdateInstanceInformation"
+#          Resource: "*"
+#        - Effect: Allow
+#          Action:
+#              - "ssmmessages:CreateControlChannel"
+#              - "ssmmessages:CreateDataChannel"
+#              - "ssmmessages:OpenControlChannel"
+#              - "ssmmessages:OpenDataChannel"
+#          Resource: "*"
+#        - Effect: Allow
+#          Action:
+#              - "ec2messages:AcknowledgeMessage"
+#              - "ec2messages:DeleteMessage"
+#              - "ec2messages:FailMessage"
+#              - "ec2messages:GetEndpoint"
+#              - "ec2messages:GetMessages"
+#              - "ec2messages:SendReply"
+#          Resource: "*"
+#      Roles:
+#      - !Ref AccessRole
+
