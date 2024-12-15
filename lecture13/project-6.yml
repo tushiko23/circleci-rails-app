@@ -11,7 +11,7 @@ Parameters:
   S3BucketName: 
     Description: Type of this BucketName
     Type: String
-    Default: rails-app-project-s3
+    Default: "s3-bucket-name" 
 
   #-----------------------------------------------------------------------------
   # S3 bucket

@@ -20,6 +20,27 @@
   become: yes
   become_user: root
 
+- name: sockets directory created to connect domain socket and start puma service
+  file:
+    path: "/home/ec2-user/raisetech-live8-sample-app/tmp/sockets"
+    state: directory
+    owner: "ec2-user"
+    group: "ec2-user"
+    mode: "775"
+
+- name: pids directory created to connect domain socket and start puma service
+  file:
+    path: "/home/ec2-user/raisetech-live8-sample-app/tmp/pids"
+    state: directory
+    owner: "ec2-user"
+    group: "ec2-user"
+    mode: "775"
+
+- name: Set up assets precompile on development rails app
+  shell: bash -lc "RAILS_ENV=development bin/rails assets:precompile"
+  args:
+    chdir: /home/ec2-user/raisetech-live8-sample-app
+
 - name: Start puma service
   service:
     name: puma
