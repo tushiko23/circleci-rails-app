@@ -167,7 +167,7 @@ jobs:
       - run:
           name: check whick ss and env
           command: |
-            which ss
+            set -x
             env
       - run: 
           name: Config directory permission for testing serverspec
