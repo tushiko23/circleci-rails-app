@@ -14,9 +14,9 @@ else
   set :sudo_password, ENV['SUDO_PASSWORD']
 end
 
-host = ENV['TARGET_HOST']
+host = ENV['TARGET_HOST'] || 'target' # ~/.ssh/config からHost名を参照
 
-options = Net::SSH::Config.for(host)
+options = Net::SSH::Config.for(host) 
 
 options[:user] ||= 'ec2-user'
 
@@ -25,7 +25,6 @@ set :ssh_options, options
 
 # Disable sudo
 set :disable_sudo, true
-
 
 # Set environment variables
 # set :env, :LANG => 'C', :LC_MESSAGES => 'C'
