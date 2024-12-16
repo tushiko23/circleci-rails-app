@@ -165,9 +165,15 @@ jobs:
       - attach_workspace:
           at: .  
       - run:
+          name: Install Dependencies to use ss commands
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y iproute2 openssh-client
+      - run:
           name: check whick ss and env
           command: |
             set -x
+            which ss
             env
       - run: 
           name: Config directory permission for testing serverspec
