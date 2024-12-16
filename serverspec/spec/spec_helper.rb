@@ -20,7 +20,11 @@ options[:keys] = ['~/.ssh/id_rsa']
 options[:user] ||= 'ec2-user'
 # options[:host_name] = '54.238.217.251'
 
-set :host, host        
+unless options[:host_name]
+  raise "HostName not resolved for host: #{host}. Check your .ssh/config or set options[:host_name] manually."
+end
+
+set :host, options[:host_name]        
 set :ssh_options, options
 
 # Disable sudo
