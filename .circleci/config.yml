@@ -54,12 +54,30 @@ jobs:
             echo "alb_dnsname: $ALB_DNSNAME" >> Ansible/vars.yml
             echo "s3_bucket_name: $S3_BUCKET_NAME" >> Ansible/vars.yml
             # cat "Ansible/vars.yml"
-       
+
+      - run: 
+          name: Get EC2 Public IP for using SeverSpec test
+          command: |
+            set -x
+            EC2_Public_IP_Address=$(aws ec2 describe-instances --filters "Name=tag:aws:cloudformation:stack-name,Values=EC2-Stack" --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
+            echo "HostName $EC2_Public_IP_Address" >> .ssh/config
+            echo "IdentityFile ~/.ssh/id_rsa" >> .ssh/config
+            echo "User ec2-user" >> .ssh/config
+            echo "ServerAliveInterval 30" >> .ssh/config
+            cat ".ssh/config"
+
       - persist_to_workspace:
           root: Ansible/
           paths: 
             - vars.yml
-
+      
+      - persist_to_workspace:
+          root: .ssh/
+          paths:
+            - config
+      
+      - run: ls -l
+    
   exucute_ansible:
     executor: 
       name: python/default
