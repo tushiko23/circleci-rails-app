@@ -61,7 +61,7 @@ jobs:
             set -x
             EC2_Public_IP_Address=$(aws ec2 describe-instances --filters "Name=tag:aws:cloudformation:stack-name,Values=EC2-Stack" --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
             mkdir .ssh
-            echo "HostName $EC2_Public_IP_Address" >> .ssh/config
+            echo "TARGET_HOST $EC2_Public_IP_Address" >> .ssh/config
             echo "IdentityFile ~/.ssh/id_rsa" >> .ssh/config
             echo "User ec2-user" >> .ssh/config
             echo "ServerAliveInterval 30" >> .ssh/config
