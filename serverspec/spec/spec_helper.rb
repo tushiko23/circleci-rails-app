@@ -14,15 +14,12 @@ set :backend, :ssh
 #  set :sudo_password, ENV['SUDO_PASSWORD']
 #end
 
-
-options = Net::SSH::Config.for('target') # ~/.ssh/config からHost名を参照
+host = 'target' 
+options = Net::SSH::Config.for(host) 
 
 options[:user] ||= 'ec2-user'
 
-
-host = 'target' # ~/.ssh/config からHost名を参照
-
-set :host        
+set :host, host        
 set :ssh_options, options
 
 # Disable sudo
