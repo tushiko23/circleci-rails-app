@@ -68,15 +68,9 @@ jobs:
             echo "   ServerAliveInterval 30" >> .ssh/config
             chmod 600 ".ssh/config"
             cat ".ssh/config"
-            echo "Retrieved Public IP: $EC2_Public_IP_Address"
-            echo "export TARGET_HOST_NAME=$EC2_Public_IP_Address" >> $BASH_ENV
+            echo "$EC2_Public_IP_Address" >> ip_address.txt
+            cat "ip_address.txt"
 
-      - run:
-          name: Debug Environment Variables
-          command: |
-            source $BASH_ENV
-            echo "TARGET_HOST_NAME: $TARGET_HOST_NAME"
-      
       - persist_to_workspace:
           root: Ansible/
           paths: 
@@ -87,6 +81,10 @@ jobs:
           paths:
             - config
       
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ip_address.txt
       - run: ls -la
     
 #  exucute_ansible:
@@ -163,7 +161,9 @@ jobs:
           fingerprints:
             - "SHA256:gqs/3tIho0hvNAc4b9bslkvWOCuNzfZCedQoi2MMmwQ"  
       - attach_workspace:
-          at: .ssh/  
+          at: .ssh/
+      - attach_workspace:
+          at: .  
       - run: 
           name: Config directory permission for testing serverspec
           command: |
@@ -174,7 +174,7 @@ jobs:
             cat .ssh/config
             cd serverspec
             bundle install
-            bundle exec rake spec
+            TARGET_HOST_NAME=$(cat /home/circleci/project/ip_address.txt) bundle exec rake spec
             
 workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
