@@ -63,7 +63,7 @@ jobs:
             mkdir .ssh
             echo "Host target" >> .ssh/config
             echo "   HostName $EC2_Public_IP_Address" >> .ssh/config
-            echo "   IdentityFile ~/.ssh/id_rsa" >> .ssh/config
+            # echo "   IdentityFile ~/.ssh/id_rsa" >> .ssh/config
             echo "   User ec2-user" >> .ssh/config
             echo "   ServerAliveInterval 30" >> .ssh/config
             cat ".ssh/config"
@@ -158,9 +158,6 @@ jobs:
             set -x
             ls -la
             ls -la .ssh/
-            ls -la .ssh/id_rsa
-            chmod 700 ~/.ssh/
-            chmod 600 ~/.ssh/id_rsa
             cd serverspec
             bundle install
             bundle exec rake spec
