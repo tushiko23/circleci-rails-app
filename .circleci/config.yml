@@ -164,10 +164,14 @@ jobs:
           at: .ssh/
       - attach_workspace:
           at: .  
+      - run:
+          name: check whick ss and env
+          command: |
+            which ss
+            env
       - run: 
           name: Config directory permission for testing serverspec
           command: |
-            source $BASH_ENV
             set -x
             ls -la
             ls -la .ssh/
