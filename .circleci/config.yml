@@ -66,8 +66,17 @@ jobs:
             echo "   IdentityFile ~/.ssh/id_rsa" >> .ssh/config
             echo "   User ec2-user" >> .ssh/config
             echo "   ServerAliveInterval 30" >> .ssh/config
+            chmod 600 ".ssh/config"
             cat ".ssh/config"
+            echo "Retrieved Public IP: $EC2_Public_IP_Address"
+            echo "export TARGET_HOST_NAME=$EC2_Public_IP_Address" >> $BASH_ENV
 
+      - run:
+          name: Debug Environment Variables
+          command: |
+            source $BASH_ENV
+            echo "TARGET_HOST_NAME: $TARGET_HOST_NAME"
+      
       - persist_to_workspace:
           root: Ansible/
           paths: 
@@ -142,9 +151,9 @@ jobs:
  
   execute_serverspec:
     executor: ruby/default
-    environment:
+    #environment:
       # TARGET_HOST_NAME: "54.238.217.251" 
-      TARGET_HOST: "target"     
+      #TARGET_HOST: "target"     
     steps:
       - checkout
       - ruby/install:
@@ -158,6 +167,7 @@ jobs:
       - run: 
           name: Config directory permission for testing serverspec
           command: |
+            source $BASH_ENV
             set -x
             ls -la
             ls -la .ssh/
