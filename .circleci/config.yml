@@ -3,6 +3,7 @@ orbs:
   python: circleci/python@2.0.3
   aws-cli: circleci/aws-cli@5.1
   ansible-playbook: orbss/ansible-playbook@0.0.5
+  ruby: circleci/ruby@2.3.1
 
 jobs:
   cfn-lint:
@@ -118,6 +119,13 @@ jobs:
       - ansible-playbook/playbook:
           playbook: Ansible/playbook.yml
           playbook-options: -u ec2-user -i Ansible/aws_ec2.yml --private-key ~/.ssh/id_rsa            
+ 
+  execute_serverspec:
+    executor: ruby/default
+    steps:
+      - checkout
+      - ruby/install:
+          version: 3.2.3
   
 workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
@@ -129,3 +137,6 @@ workflows:
       - exucute_ansible:
           requires:
             - execute_cfn
+      - execute_serverspec:
+          requires:
+            - exucute_ansible
