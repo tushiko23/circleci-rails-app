@@ -40,7 +40,6 @@ jobs:
       - run:
           name: Get Dynamic Resources on AWS Ressources
           command: |
-            set -x
             EC2_Public_IP_Address=$(aws ec2 describe-instances --filters "Name=tag:aws:cloudformation:stack-name,Values=EC2-Stack" --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
             RDS_MASTER_USER=$(aws rds describe-db-instances --db-instance-identifier "rails-app-project-rds" --query "DBInstances[].[MasterUsername]" --output text)
             RDS_END_POINT=$(aws rds describe-db-instances --db-instance-identifier "rails-app-project-rds" --query "DBInstances[].[Endpoint.Address]" --output text)
@@ -53,13 +52,12 @@ jobs:
             echo "rds_password: \"'${RDS_PASSWORD}'\"" >> Ansible/vars.yml
             echo "alb_dnsname: $ALB_DNSNAME" >> Ansible/vars.yml
             echo "s3_bucket_name: $S3_BUCKET_NAME" >> Ansible/vars.yml
-            cat "Ansible/vars.yml"
+            # cat "Ansible/vars.yml"
        
       - persist_to_workspace:
           root: Ansible/
           paths: 
             - vars.yml
-            - .credentials_vars.yml
 
   exucute_ansible:
     executor: 
