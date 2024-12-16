@@ -77,7 +77,7 @@ jobs:
           paths:
             - config
       
-      - run: ls -l
+      - run: ls -la
     
   exucute_ansible:
     executor: 
@@ -151,8 +151,16 @@ jobs:
             - "SHA256:gqs/3tIho0hvNAc4b9bslkvWOCuNzfZCedQoi2MMmwQ"  
       - attach_workspace:
           at: .ssh/
-      - run: ls -l .ssh
-
+      - run: 
+          name: Config directory permission for testing serverspec
+          command: |
+            set -x
+            ls -la
+            chmod 700 ~/.ssh/
+            chmod 600 ~/.ssh/id_rsa
+            cd serverspec
+            bundle exec rake spec
+            
 workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
     jobs:
