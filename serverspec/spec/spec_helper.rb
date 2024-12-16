@@ -22,7 +22,7 @@ options[:user] ||= 'ec2-user'
 
 host = 'target' # ~/.ssh/config からHost名を参照
 
-set :host,        
+set :host        
 set :ssh_options, options
 
 # Disable sudo
