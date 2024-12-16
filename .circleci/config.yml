@@ -126,7 +126,10 @@ jobs:
       - checkout
       - ruby/install:
           version: 3.2.3
-  
+      - run: ruby --version
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:gqs/3tIho0hvNAc4b9bslkvWOCuNzfZCedQoi2MMmwQ"  
 workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
     jobs:
