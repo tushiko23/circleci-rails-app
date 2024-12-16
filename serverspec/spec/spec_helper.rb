@@ -8,9 +8,7 @@ options = Net::SSH::Config.for(host)
 options[:keys] = ['~/.ssh/id_rsa']
 options[:user] ||= 'ec2-user'
 
-options[:host_name] = ENV['TARGET_HOST'] if ENV['TARGET_HOST']
-
-set :host, options[:host_name] || host       
+set :host, host       
 set :ssh_options, options
 
 # Disable sudo
