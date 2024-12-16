@@ -16,8 +16,9 @@ set :backend, :ssh
 
 host = 'target' 
 options = Net::SSH::Config.for(host) 
-
+options[:keys] = ['~/.ssh/id_rsa']
 options[:user] ||= 'ec2-user'
+options[:host_name] = '54.238.217.251'
 
 set :host, host        
 set :ssh_options, options
