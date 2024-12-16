@@ -3,28 +3,15 @@ require 'net/ssh'
 
 set :backend, :ssh
 
-#if ENV['ASK_SUDO_PASSWORD']
-#  begin
-#    require 'highline/import'
-#  rescue LoadError
-#    fail "highline is not available. Try installing it."
-#  end
-#  set :sudo_password, ask("Enter sudo password: ") { |q| q.echo = false }
-#else
-#  set :sudo_password, ENV['SUDO_PASSWORD']
-#end
-
-host = 'target' 
+host = ENV['TARGET_HOST']
 options = Net::SSH::Config.for(host) 
 options[:keys] = ['~/.ssh/id_rsa']
 options[:user] ||= 'ec2-user'
 # options[:host_name] = '54.238.217.251'
 
-unless options[:host_name]
-  raise "HostName not resolved for host: #{host}. Check your .ssh/config or set options[:host_name] manually."
-end
+options[:host_name] = ENV['TARGET_HOST_NAME'] if ENV['TARGET_HOST_NAME']
 
-set :host, options[:host_name]        
+set :host, options[:host_name] || host       
 set :ssh_options, options
 
 # Disable sudo

@@ -2,6 +2,9 @@ version: 2.1
 orbs:
   python: circleci/python@2.0.3
   aws-cli: circleci/aws-cli@5.1
+  ansible-playbook: orbss/ansible-playbook@0.0.5
+  ruby: circleci/ruby@2.3.1
+
 jobs:
   cfn-lint:
     executor: python/default
@@ -11,6 +14,7 @@ jobs:
       - run:
           name: run cfn-lint
           command: |
+            set -x
             cfn-lint -i W3002 -t lecture13/*.yml
 
   execute_cfn:
@@ -28,10 +32,10 @@ jobs:
           command: |
             aws cloudformation deploy --stack-name NetWork-Stack --template-file lecture13/project-1.yml
             aws cloudformation deploy --stack-name SecurityGroup-Stack --template-file lecture13/project-2.yml  --parameter-overrides SgIngCidrIpSSH=$MY_IP
-            aws cloudformation deploy --stack-name EC2-Stack --template-file lecture13/project-3.yml  --parameter-overrides KeyPairName=$KEY_PAIR_NAME --capabilities CAPABILITY_NAMED_IAM
+            aws cloudformation deploy --stack-name EC2-Stack --template-file lecture13/project-3.yml  --parameter-overrides KeyPairName=$KEY_PAIR_NAME S3BucketName=$S3_BUCKET_NAME --capabilities CAPABILITY_NAMED_IAM
             aws cloudformation deploy --stack-name ALB-Stack --template-file lecture13/project-4.yml
             aws cloudformation deploy --stack-name RDS-Stack --template-file lecture13/project-5.yml
-            aws cloudformation deploy --stack-name S3Bucket-Stack --template-file lecture13/project-6.yml
+            aws cloudformation deploy --stack-name S3Bucket-Stack --template-file lecture13/project-6.yml --parameter-overrides S3BucketName=$S3_BUCKET_NAME
             aws cloudformation wait stack-create-complete --stack-name RDS-Stack
      
       - run:
@@ -43,22 +47,132 @@ jobs:
             SECRETS_MANAGER_NAME=$(aws secretsmanager list-secrets --filters "Key=tag-key,Values=Name" "Key=tag-value,Values=Rails-app-Project" --query "SecretList[].[Name]" --output text)
             RDS_PASSWORD=$(aws secretsmanager get-secret-value --secret-id "$SECRETS_MANAGER_NAME" --query "SecretString" --output text | jq -r '.password')
             ALB_DNSNAME=$(aws elbv2 describe-load-balancers --query "LoadBalancers[].[DNSName]" --names "Rails-Project-alb" --output text)
-      
-      - run:      
-          name: Check Outputs
+            # echo "EC2_Public_IP_Address: $EC2_Public_IP_Address" >> Ansible/vars.yml
+            echo "rds_master_user: $RDS_MASTER_USER" >> Ansible/vars.yml
+            echo "rds_end_point: $RDS_END_POINT" >> Ansible/vars.yml
+            echo "rds_password: \"'${RDS_PASSWORD}'\"" >> Ansible/vars.yml
+            echo "alb_dnsname: $ALB_DNSNAME" >> Ansible/vars.yml
+            echo "s3_bucket_name: $S3_BUCKET_NAME" >> Ansible/vars.yml
+            # cat "Ansible/vars.yml"
+
+      - run: 
+          name: Get EC2 Public IP for using SeverSpec test
           command: |
-            echo "$EC2_Public_IP_Address"
-            echo "$RDS_MASTER_USER"
-            echo "$RDS_END_POINT"
-            echo "RDS_PASSWORD"
-            echo "$ALB_DNSNAME"
+            set -x
+            EC2_Public_IP_Address=$(aws ec2 describe-instances --filters "Name=tag:aws:cloudformation:stack-name,Values=EC2-Stack" --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
+            mkdir .ssh
+            echo "Host target" >> .ssh/config
+            echo "   HostName $EC2_Public_IP_Address" >> .ssh/config
+            echo "   IdentityFile ~/.ssh/id_rsa" >> .ssh/config
+            echo "   User ec2-user" >> .ssh/config
+            echo "   ServerAliveInterval 30" >> .ssh/config
+            cat ".ssh/config"
 
+      - persist_to_workspace:
+          root: Ansible/
+          paths: 
+            - vars.yml
+      
+      - persist_to_workspace:
+          root: .ssh/
+          paths:
+            - config
+      
+      - run: ls -la
+    
+  exucute_ansible:
+    executor: 
+      name: python/default
+      tag: "2.7.18"
+    
+    steps: 
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:gqs/3tIho0hvNAc4b9bslkvWOCuNzfZCedQoi2MMmwQ"
+      - run: 
+          name: Check version python and pip
+          command: |
+            python --version
+            pip    --version      
+      - ansible-playbook/install: 
+          version: 2.9.23
+      - run:
+          name: Ansible dynamic inventory set up 1
+          command: |
+            set -x
+            cd Ansible
+            ls aws_ec2.yml
+            pwd
+      - run:
+          name: Ansible dynamic inventory set up 2
+          command: |
+            set -x
+            ansible-galaxy collection install amazon.aws
+      - run:
+          name: Ansible dynamic inventory set up 3
+          command: |
+            set -x
+            pip install boto3
+            pip install botocore
+            pip list | grep boto
+       
+      - run:
+          name: Get EC2-PublicIP from dynamic inventory
+          command: |
+            set -x
+            pwd
+            cd Ansible
+            ansible-inventory -i aws_ec2.yml --graph
+      
+      - attach_workspace:
+          at: Ansible/
 
-
-workflows:
+      - run:
+          name: Check Ansible/vars.yml on project current directory
+          command: |
+            set -x
+            pwd
+            ls
+            ls -la Ansible/
+ 
+      - ansible-playbook/playbook:
+          playbook: Ansible/playbook.yml
+          playbook-options: -u ec2-user -i Ansible/aws_ec2.yml --private-key ~/.ssh/id_rsa            
+ 
+  execute_serverspec:
+    executor: ruby/default
+    steps:
+      - checkout
+      - ruby/install:
+          version: 3.2.3
+      - run: ruby --version
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:gqs/3tIho0hvNAc4b9bslkvWOCuNzfZCedQoi2MMmwQ"  
+      - attach_workspace:
+          at: .ssh/
+      - run: 
+          name: Config directory permission for testing serverspec
+          command: |
+            set -x
+            ls -la
+            ls -la .ssh/
+            cat .ssh/config
+            cd serverspec
+            bundle install
+            bundle exec rake spec
+            
+workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
     jobs:
       - cfn-lint
       - execute_cfn:
           requires:
             - cfn-lint
+      - exucute_ansible:
+          requires:
+            - execute_cfn
+      - execute_serverspec:
+          requires:
+            - exucute_ansible
