@@ -152,7 +152,7 @@ jobs:
   execute_serverspec:
     executor: ruby/default
     environment:
-      TARGET_HOST_NAME: 52.68.220.213
+      TARGET_HOST_NAME: ec2-public
       #TARGET_HOST: "target"     
     steps:
       - checkout
@@ -168,7 +168,7 @@ jobs:
           name: set up .ssh/config
           command: |
             mkdir .ssh
-            echo "Host target" >> .ssh/config
+            echo "Host ec2-public" >> .ssh/config
             echo "   HostName $(cat /home/circleci/project/ip_address.txt)" >> .ssh/config
             echo "   IdentityFile ~/.ssh/id_rsa" >> .ssh/config
             echo "   User ec2-user" >> .ssh/config
