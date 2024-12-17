@@ -60,14 +60,14 @@ jobs:
           command: |
             set -x
             EC2_Public_IP_Address=$(aws ec2 describe-instances --filters "Name=tag:aws:cloudformation:stack-name,Values=EC2-Stack" --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
-            mkdir .ssh
-            echo "Host target" >> .ssh/config
-            echo "   HostName $EC2_Public_IP_Address" >> .ssh/config
-            echo "   IdentityFile ~/.ssh/id_rsa" >> .ssh/config
-            echo "   User ec2-user" >> .ssh/config
-            echo "   ServerAliveInterval 30" >> .ssh/config
-            chmod 600 ".ssh/config"
-            cat ".ssh/config"
+            # mkdir .ssh
+            # echo "Host target" >> .ssh/config
+            # echo "   HostName $EC2_Public_IP_Address" >> .ssh/config
+            # echo "   IdentityFile ~/.ssh/id_rsa" >> .ssh/config
+            # echo "   User ec2-user" >> .ssh/config
+            # echo "   ServerAliveInterval 30" >> .ssh/config
+            # chmod 600 ".ssh/config"
+            # cat ".ssh/config"
             echo "$EC2_Public_IP_Address" >> ip_address.txt
             cat "ip_address.txt"
 
@@ -76,10 +76,10 @@ jobs:
           paths: 
             - vars.yml
       
-      - persist_to_workspace:
-          root: .ssh/
-          paths:
-            - config
+      # - persist_to_workspace:
+      #    root: .ssh/
+      #    paths:
+      #      - config
       
       - persist_to_workspace:
           root: .
@@ -160,8 +160,8 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "SHA256:gqs/3tIho0hvNAc4b9bslkvWOCuNzfZCedQoi2MMmwQ"  
-      - attach_workspace:
-          at: .ssh/
+      # - attach_workspace:
+      #    at: .ssh/
       - attach_workspace:
           at: .  
       - run:
@@ -180,11 +180,12 @@ jobs:
           command: |
             set -x
             ls -la
-            ls -la .ssh/
-            cat .ssh/config
+            # ls -la .ssh/
+            # cat .ssh/config
             cd serverspec
             bundle install
-            TARGET_HOST_NAME=$(cat /home/circleci/project/ip_address.txt) bundle exec rake spec
+            # TARGET_HOST_NAME=$(cat /home/circleci/project/ip_address.txt) bundle exec rake spec
+            TARGET_HOST_NAME=$(cat ~/ip_address.txt) bundle exec rake spec
             
 workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
