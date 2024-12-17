@@ -87,7 +87,7 @@ jobs:
             - ip_address.txt
       - run: ls -la
     
-  exucute_ansible:
+  execute_ansible:
     executor:  
       name: python/default
       tag: "2.7.18"
@@ -176,7 +176,7 @@ jobs:
             which ss
             env
       - run: 
-          name: Config directory permission for testing serverspec
+          name: Testing serverspec
           command: |
             set -x
             ls -la
@@ -194,7 +194,7 @@ workflows:
       - execute_cfn:
           requires:
             - cfn-lint
-      - exucute_ansible:
+      - execute_ansible:
           requires:
             - execute_cfn
       - execute_serverspec:
