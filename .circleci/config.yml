@@ -184,8 +184,8 @@ jobs:
             # cat .ssh/config
             cd serverspec
             bundle install
-            # TARGET_HOST_NAME=$(cat /home/circleci/project/ip_address.txt) bundle exec rake spec
-            TARGET_HOST_NAME=$(cat ~/ip_address.txt) bundle exec rake spec
+            TARGET_HOST_NAME=$(cat /home/circleci/project/ip_address.txt) bundle exec rake spec
+            # TARGET_HOST_NAME=$(cat ~/ip_address.txt) bundle exec rake spec
             
 workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
