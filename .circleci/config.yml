@@ -53,6 +53,8 @@ jobs:
             echo "rds_password: \"'${RDS_PASSWORD}'\"" >> Ansible/vars.yml
             echo "alb_dnsname: $ALB_DNSNAME" >> Ansible/vars.yml
             echo "s3_bucket_name: $S3_BUCKET_NAME" >> Ansible/vars.yml
+            echo "$EC2_Public_IP_Address" >> ip_address.txt
+            cat "ip_address.txt"
             # cat "Ansible/vars.yml"
 
       #- run: 
@@ -81,10 +83,10 @@ jobs:
       #    paths:
       #      - config
       
-      # - persist_to_workspace:
-      #    root: .
-      #    paths:
-      #      - ip_address.txt
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ip_address.txt
       - run: ls -la
     
 #  execute_ansible:
@@ -160,12 +162,14 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "SHA256:gqs/3tIho0hvNAc4b9bslkvWOCuNzfZCedQoi2MMmwQ"  
+      - attach_workspace:
+          at: .
       - run:
           name: set up .ssh/config
           command: |
             mkdir .ssh
             echo "Host target" >> .ssh/config
-            echo "   HostName $EC2_Public_IP_Address" >> .ssh/config
+            echo "   HostName $(cat /home/circleci/project/ip_address.txt)" >> .ssh/config
             echo "   IdentityFile ~/.ssh/id_rsa" >> .ssh/config
             echo "   User ec2-user" >> .ssh/config
             echo "   ServerAliveInterval 30" >> .ssh/config
@@ -174,8 +178,8 @@ jobs:
             cat ".ssh/config"
       # - attach_workspace:
       #    at: .ssh/
-      - attach_workspace:
-          at: .  
+      #- attach_workspace:
+      #    at: .  
       - run:
           name: Install Dependencies to use ss commands
           command: |
