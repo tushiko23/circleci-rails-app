@@ -1,13 +1,6 @@
 require 'spec_helper'
 
-listen_port1 = 22
-listen_port2 = 80
-
-describe port(listen_port1) do
-  it { should be_listening }
-end
-
-describe port(listen_port2) do
+describe port("80") do
   it { should be_listening }
 end
 

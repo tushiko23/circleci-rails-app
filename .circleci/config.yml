@@ -3,6 +3,7 @@ orbs:
   python: circleci/python@2.0.3
   aws-cli: circleci/aws-cli@5.1
   ansible-playbook: orbss/ansible-playbook@0.0.5
+  ruby: circleci/ruby@2.3.1
 
 jobs:
   cfn-lint:
@@ -53,14 +54,41 @@ jobs:
             echo "alb_dnsname: $ALB_DNSNAME" >> Ansible/vars.yml
             echo "s3_bucket_name: $S3_BUCKET_NAME" >> Ansible/vars.yml
             # cat "Ansible/vars.yml"
-       
+
+      - run: 
+          name: Get EC2 Public IP for using SeverSpec test
+          command: |
+            set -x
+            EC2_Public_IP_Address=$(aws ec2 describe-instances --filters "Name=tag:aws:cloudformation:stack-name,Values=EC2-Stack" --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
+            # mkdir .ssh
+            # echo "Host target" >> .ssh/config
+            # echo "   HostName $EC2_Public_IP_Address" >> .ssh/config
+            # echo "   IdentityFile ~/.ssh/id_rsa" >> .ssh/config
+            # echo "   User ec2-user" >> .ssh/config
+            # echo "   ServerAliveInterval 30" >> .ssh/config
+            # chmod 600 ".ssh/config"
+            # cat ".ssh/config"
+            echo "$EC2_Public_IP_Address" >> ip_address.txt
+            cat "ip_address.txt"
+
       - persist_to_workspace:
           root: Ansible/
           paths: 
             - vars.yml
-
-  exucute_ansible:
-    executor: 
+      
+      # - persist_to_workspace:
+      #    root: .ssh/
+      #    paths:
+      #      - config
+      
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ip_address.txt
+      - run: ls -la
+    
+  execute_ansible:
+    executor:  
       name: python/default
       tag: "2.7.18"
     
@@ -108,17 +136,57 @@ jobs:
           at: Ansible/
 
       - run:
-          name: Check Ansible/vars.yml on project current directory
-          command: |
-            set -x
-            pwd
-            ls
-            ls -la Ansible/
+         name: Check Ansible/vars.yml on project current directory
+         command: |
+           set -x
+           pwd
+           ls
+           ls -la Ansible/
  
       - ansible-playbook/playbook:
           playbook: Ansible/playbook.yml
           playbook-options: -u ec2-user -i Ansible/aws_ec2.yml --private-key ~/.ssh/id_rsa            
-  
+ 
+  execute_serverspec:
+    executor: ruby/default
+    #environment:
+      # TARGET_HOST_NAME: "54.238.217.251" 
+      #TARGET_HOST: "target"     
+    steps:
+      - checkout
+      - ruby/install:
+          version: 3.2.3
+      - run: ruby --version
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:gqs/3tIho0hvNAc4b9bslkvWOCuNzfZCedQoi2MMmwQ"  
+      # - attach_workspace:
+      #    at: .ssh/
+      - attach_workspace:
+          at: .  
+      - run:
+          name: Install Dependencies to use ss commands
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y iproute2 openssh-client
+      - run:
+          name: check whick ss and env
+          command: |
+            set -x
+            which ss
+            env
+      - run: 
+          name: Testing serverspec
+          command: |
+            set -x
+            ls -la
+            # ls -la .ssh/
+            # cat .ssh/config
+            cd serverspec
+            bundle install
+            TARGET_HOST_NAME=$(cat /home/circleci/project/ip_address.txt) bundle exec rake spec
+            # TARGET_HOST_NAME=$(cat ~/ip_address.txt) bundle exec rake spec
+            
 workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
     jobs:
@@ -126,6 +194,9 @@ workflows:
       - execute_cfn:
           requires:
             - cfn-lint
-      - exucute_ansible:
+      - execute_ansible:
           requires:
             - execute_cfn
+      - execute_serverspec:
+          requires:
+            - execute_ansible
