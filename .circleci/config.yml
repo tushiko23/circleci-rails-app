@@ -199,4 +199,4 @@ workflows:
             - execute_cfn
       - execute_serverspec:
           requires:
-            - execute_cfn
+            - execute_ansible
