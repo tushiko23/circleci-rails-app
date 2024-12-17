@@ -87,65 +87,65 @@ jobs:
             - ip_address.txt
       - run: ls -la
     
-#  exucute_ansible:
-#    executor: 
-#      name: python/default
-#      tag: "2.7.18"
+  exucute_ansible:
+    executor:  
+      name: python/default
+      tag: "2.7.18"
     
-#    steps: 
-#      - checkout
-#      - add_ssh_keys:
-#          fingerprints:
-#            - "SHA256:gqs/3tIho0hvNAc4b9bslkvWOCuNzfZCedQoi2MMmwQ"
-#      - run: 
-#          name: Check version python and pip
-#          command: |
-#            python --version
-#            pip    --version      
-#      - ansible-playbook/install: 
-#          version: 2.9.23
-#      - run:
-#          name: Ansible dynamic inventory set up 1
-#          command: |
-#            set -x
-#            cd Ansible
-#            ls aws_ec2.yml
-#            pwd
-#      - run:
-#          name: Ansible dynamic inventory set up 2
-#          command: |
-#            set -x
-#            ansible-galaxy collection install amazon.aws
-#      - run:
-#          name: Ansible dynamic inventory set up 3
-#          command: |
-#            set -x
-#            pip install boto3
-#            pip install botocore
-#            pip list | grep boto
-#       
-#      - run:
-#          name: Get EC2-PublicIP from dynamic inventory
-#          command: |
-#            set -x
-#            pwd
-#            cd Ansible
-#            ansible-inventory -i aws_ec2.yml --graph
+    steps: 
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:gqs/3tIho0hvNAc4b9bslkvWOCuNzfZCedQoi2MMmwQ"
+      - run: 
+          name: Check version python and pip
+          command: |
+            python --version
+            pip    --version      
+      - ansible-playbook/install: 
+          version: 2.9.23
+      - run:
+          name: Ansible dynamic inventory set up 1
+          command: |
+            set -x
+            cd Ansible
+            ls aws_ec2.yml
+            pwd
+      - run:
+          name: Ansible dynamic inventory set up 2
+          command: |
+            set -x
+            ansible-galaxy collection install amazon.aws
+      - run:
+          name: Ansible dynamic inventory set up 3
+          command: |
+            set -x
+            pip install boto3
+            pip install botocore
+            pip list | grep boto
+       
+      - run:
+          name: Get EC2-PublicIP from dynamic inventory
+          command: |
+            set -x
+            pwd
+            cd Ansible
+            ansible-inventory -i aws_ec2.yml --graph
       
-#      - attach_workspace:
-#          at: Ansible/
+      - attach_workspace:
+          at: Ansible/
 
-#     - run:
-#         name: Check Ansible/vars.yml on project current directory
-#         command: |
-#           set -x
-#            pwd
-#           ls
-#            ls -la Ansible/
+      - run:
+         name: Check Ansible/vars.yml on project current directory
+         command: |
+           set -x
+           pwd
+           ls
+           ls -la Ansible/
  
-#      - ansible-playbook/playbook:
-#          playbook: Ansible/playbook.yml
-#          playbook-options: -u ec2-user -i Ansible/aws_ec2.yml --private-key ~/.ssh/id_rsa            
+      - ansible-playbook/playbook:
+          playbook: Ansible/playbook.yml
+          playbook-options: -u ec2-user -i Ansible/aws_ec2.yml --private-key ~/.ssh/id_rsa            
  
   execute_serverspec:
     executor: ruby/default
@@ -194,9 +194,9 @@ workflows:
       - execute_cfn:
           requires:
             - cfn-lint
-#      - exucute_ansible:
-#          requires:
-#            - execute_cfn
+      - exucute_ansible:
+          requires:
+            - execute_cfn
       - execute_serverspec:
           requires:
             - execute_cfn
