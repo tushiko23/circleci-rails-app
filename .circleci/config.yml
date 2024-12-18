@@ -152,7 +152,7 @@ jobs:
   execute_serverspec:
     executor: ruby/default
     environment:
-      TARGET_HOST: 52.68.220.213
+      TARGET_HOST: target
       #TARGET_HOST: "target"     
     steps:
       - checkout
@@ -168,14 +168,17 @@ jobs:
           name: set up .ssh/config
           command: |
             mkdir .ssh
-            echo "Host target" >> .ssh/config
-            echo "   HostName $(cat /home/circleci/project/ip_address.txt)" >> .ssh/config
-            #echo "   IdentityFile ~/.ssh/id_rsa" >> .ssh/config
-            echo "   User ec2-user" >> .ssh/config
-            echo "   ServerAliveInterval 30" >> .ssh/config
-            echo "   StrictHostKeyChecking no" >> .ssh/config
-            chmod 600 ".ssh/config"
-            cat ".ssh/config"
+            echo "Host target" >> ~/.ssh/config
+            echo "   HostName $(cat /home/circleci/project/ip_address.txt)" >> ~/.ssh/config
+            #echo "   IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
+            echo "   User ec2-user" >> ~/.ssh/config
+            echo "   ServerAliveInterval 30" >> ~/.ssh/config
+            echo "   StrictHostKeyChecking no" >> ~/.ssh/config
+            chmod 600 "~/.ssh/config"
+            cat "~/.ssh/config"
+            pwd
+            cd ~
+            pwd
       # - attach_workspace:
       #    at: .ssh/
       #- attach_workspace:
@@ -196,12 +199,11 @@ jobs:
           command: |
             cd serverspec
             bundle install
-      #- run:
-      #    name: Check SSH Configuration
-      #    command: |
-      #      set -xe
-      #      echo "Verifying SSH configuration..."
-      #      ssh -F .ssh/config target "echo SSH connection successful!"
+      - run:
+          name: Check SSH Configuration
+          command: |
+            set -xe
+            ssh  target 
       - run: 
           name: Testing serverspec
           command: |

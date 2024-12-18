@@ -54,4 +54,4 @@ set :ssh_options, options
 # set :env, :LANG => 'C', :LC_MESSAGES => 'C'
 
 # Set PATH
-# set :path, '/sbin:/usr/local/sbin:$PATH'
+set :path, '/sbin:/usr/local/sbin:/.ssh/config:/usr/bin/ss:$PATH'
