@@ -2,10 +2,11 @@ require 'serverspec'
 require 'net/ssh'
 
 set :backend, :ssh
-
+config_file = File.expand_path('~/.ssh/config') 
 host = ENV['TARGET_HOST_NAME']
-options = Net::SSH::Config.for(host) 
-options[:keys] = ['~/.ssh/id_rsa']
+options = Net::SSH::Config.load(config_file, host)
+#options = Net::SSH::Config.for(host) 
+# options[:keys] = ['~/.ssh/id_rsa']
 options[:user] ||= 'ec2-user'
 puts "DEBUG: TARGET_HOST_NAME = #{ENV['TARGET_HOST_NAME']}"
 puts "DEBUG: SSH config for host: #{Net::SSH::Config.for(ENV['TARGET_HOST_NAME']).inspect}"
