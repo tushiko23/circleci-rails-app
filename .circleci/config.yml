@@ -168,14 +168,15 @@ jobs:
           name: set up .ssh/config
           command: |
             mkdir .ssh
+            touch .ssh/config
             echo "Host target" >> ~/.ssh/config
             echo "   HostName $(cat /home/circleci/project/ip_address.txt)" >> ~/.ssh/config
             #echo "   IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
             echo "   User ec2-user" >> ~/.ssh/config
             echo "   ServerAliveInterval 30" >> ~/.ssh/config
             echo "   StrictHostKeyChecking no" >> ~/.ssh/config
-            chmod 600 "~/.ssh/config"
-            cat "~/.ssh/config"
+            chmod 600 ~/.ssh/config
+            cat ~/.ssh/config
             pwd
             cd ~
             pwd
