@@ -151,8 +151,8 @@ jobs:
  
   execute_serverspec:
     executor: ruby/default
-    environment:
-      TARGET_HOST: target
+    #environment:
+    #  TARGET_HOST: target
       #TARGET_HOST: "target"     
     steps:
       - checkout
@@ -216,7 +216,7 @@ jobs:
             # bundle install
             #TARGET_HOST_NAME=$(cat /home/circleci/project/ip_address.txt) bundle exec rake spec
             # TARGET_HOST_NAME=$(cat ~/ip_address.txt) bundle exec rake spec
-            rake spec
+            rake spec:target
 workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
     jobs:
