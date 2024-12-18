@@ -200,11 +200,11 @@ jobs:
           command: |
             cd serverspec
             bundle install
-      - run:
-          name: Check SSH Configuration
-          command: |
-            set -xe
-            ssh  target 
+      #- run:
+      #    name: Check SSH Configuration
+      #    command: |
+      #      set -xe
+      #      ssh  target 
       - run: 
           name: Testing serverspec
           command: |
