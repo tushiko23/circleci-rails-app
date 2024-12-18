@@ -152,7 +152,7 @@ jobs:
   execute_serverspec:
     executor: ruby/default
     environment:
-      TARGET_HOST_NAME: 52.68.220.213
+      TARGET_HOST: 52.68.220.213
       #TARGET_HOST: "target"     
     steps:
       - checkout
