@@ -53,40 +53,19 @@ jobs:
             echo "rds_password: \"'${RDS_PASSWORD}'\"" >> Ansible/vars.yml
             echo "alb_dnsname: $ALB_DNSNAME" >> Ansible/vars.yml
             echo "s3_bucket_name: $S3_BUCKET_NAME" >> Ansible/vars.yml
-            echo "$EC2_Public_IP_Address" >> ip_address.txt
-            cat "ip_address.txt"
             # cat "Ansible/vars.yml"
 
-      #- run: 
-      #    name: Get EC2 Public IP for using SeverSpec test
-      #    command: |
-      #      set -x
-      #      EC2_Public_IP_Address=$(aws ec2 describe-instances --filters "Name=tag:aws:cloudformation:stack-name,Values=EC2-Stack" --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
-      #      # mkdir .ssh
-      #      # echo "Host target" >> .ssh/config
-      #      # echo "   HostName $EC2_Public_IP_Address" >> .ssh/config
-      #      # echo "   IdentityFile ~/.ssh/id_rsa" >> .ssh/config
-      #      # echo "   User ec2-user" >> .ssh/config
-      #      # echo "   ServerAliveInterval 30" >> .ssh/config
-      #      # chmod 600 ".ssh/config"
-      #      # cat ".ssh/config"
-      #      echo "$EC2_Public_IP_Address" >> ip_address.txt
-      #      cat "ip_address.txt"
-
+      - run: 
+          name: Get EC2 Public IP for using SeverSpec test
+          command: |
+            set -x
+            EC2_Public_IP_Address=$(aws ec2 describe-instances --filters "Name=tag:aws:cloudformation:stack-name,Values=EC2-Stack" --query "Reservations[*].Instances[*].PublicIpAddress" --output text)
+     
       - persist_to_workspace:
           root: Ansible/
           paths: 
             - vars.yml
-      
-      # - persist_to_workspace:
-      #    root: .ssh/
-      #    paths:
-      #      - config
-      
-      - persist_to_workspace:
-          root: .
-          paths:
-            - ip_address.txt
+
       - run: ls -la
     
   execute_ansible:
@@ -151,9 +130,8 @@ jobs:
  
   execute_serverspec:
     executor: ruby/default
-    # environmentセクションで環境変数を設定することで、.ssh/configのhostを明示的に入れて実行することも可能
-    #　environment:
-    #  TARGET_HOST: target     
+    environment:
+      TARGET_HOST_NAME: target     
     steps:
       - checkout
       - ruby/install:
@@ -162,56 +140,42 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "SHA256:gqs/3tIho0hvNAc4b9bslkvWOCuNzfZCedQoi2MMmwQ"  
-      - attach_workspace:
-          at: .
       - run:
-          name: set up .ssh/config
+          name: Config .ssh/config
           command: |
             mkdir .ssh
-            touch .ssh/config
-            echo "Host target" >> ~/.ssh/config
-            echo "   HostName $(cat /home/circleci/project/ip_address.txt)" >> ~/.ssh/config
-            #echo "   IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
-            echo "   User ec2-user" >> ~/.ssh/config
-            echo "   ServerAliveInterval 30" >> ~/.ssh/config
-            echo "   StrictHostKeyChecking no" >> ~/.ssh/config
-            chmod 600 ~/.ssh/config
-            cat ~/.ssh/config
-     
-      # - attach_workspace:
-      #    at: .ssh/
-      #- attach_workspace:
-      #    at: .  
+            echo "Host target" >> /home/circleci/project/.ssh/config
+            echo "   HostName $EC2_Public_IP_Address" >> /home/circleci/project/.ssh/config
+            echo "   IdentityFile .ssh/id_rsa" >> /home/circleci/project/.ssh/config
+            echo "   User ec2-user" >> /home/circleci/project/.ssh/config
+            echo "   ServerAliveInterval 30" >> /home/circleci/project/.ssh/config
+            chmod 600 "/home/circleci/project/.ssh/config"
+            cat "/home/circleci/project/.ssh/config"
       - run:
           name: Install Dependencies to use ss commands
           command: |
             sudo apt-get update
             sudo apt-get install -y iproute2 openssh-client
       - run:
-          name: check which ss command and env
+          name: check whick ss and env
           command: |
             set -x
             which ss
-            env
+            printenv
+            cd ~
+            pwd
       - run:
-          name: Run command bundle install
+          name: run command "bundle install"
           command: |
             cd serverspec
             bundle install
-      #- run:
-      #    name: Check SSH Configuration
-      #    command: |
-      #      set -xe
-      #      ssh  target 
       - run: 
           name: Testing serverspec
           command: |
             set -x
-            ls -la
             cd serverspec
-            #TARGET_HOST_NAME=$(cat /home/circleci/project/ip_address.txt) bundle exec rake spec
-            # TARGET_HOST_NAME=$(cat ~/ip_address.txt) bundle exec rake spec
-            rake spec:target
+            bundle exec rake spec
+                        
 workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
     jobs:
@@ -225,4 +189,3 @@ workflows:
       - execute_serverspec:
           requires:
             - execute_ansible
-      
