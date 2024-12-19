@@ -1,7 +1,0 @@
-Host target
-   HostName 18.182.121.223
-   IdentityFile ~/.ssh/serverspec_test_key
-   User ec2-user
-   ServerAliveInterval 30
-   StrictHostKeyChecking no
-   PasswordAuthentication no
