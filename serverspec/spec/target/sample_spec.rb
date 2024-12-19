@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+# Circleci環境では、ssコマンドが使えないので、"/bin/sh -c ss\ -tunl\ \|\ grep\ -E\ --\ :80\\\"になり,jobが失敗する。
+# なので、Circleciのジョブでssコマンドが使えるパッケージをインストールしてから実行。
 describe port("80") do
   it { should be_listening }
 end
@@ -20,12 +22,14 @@ describe command('npm list webpack-cli') do
   its(:stdout) { should match(/webpack-cli/) }
 end
 
+# PATHを指定しないと、/home/ec2-user/.rbenv/versionsディレクトリ下でテストするので、インストールしたパス/home/ec2-user/.rbenv/shimsディレクトリ下を指定してあげる
 describe command('ruby -v') do
   let(:disable_sudo) { true }
   let(:path) { '/home/ec2-user/.rbenv/shims:$PATH' }
   its(:stdout) { should match /ruby 3\.2\.3/ }
 end
 
+# PATHを指定しないと、/home/ec2-user/.rbenv/versionsディレクトリ下でテストするので、インストールしたパス/home/ec2-user/.rbenv/shimsディレクトリ下を指定してあげる
 describe command('bundler --version') do
   let(:disable_sudo) { true }
   let(:path) { '/home/ec2-user/.rbenv/shims:$PATH' }
@@ -37,6 +41,7 @@ describe command('yarn --version') do
   its(:stdout) { should match /^1\.22\.19/ }
 end
 
+# PATHを指定しないと、/home/ec2-user/.rbenv/versionsディレクトリ下でテストするので、インストールしたパス/home/ec2-user/.rbenv/shimsディレクトリ下を指定してあげる
 describe command('rails --version') do
   let(:disable_sudo) { true }
   let(:path) { '/home/ec2-user/.rbenv/shims:$PATH' }
@@ -52,6 +57,7 @@ describe package('nginx') do
 it { should be_installed }
 end
 
+# PATHを指定しないと、/home/ec2-user/.rbenv/versionsディレクトリ下でテストするので、インストールしたパス/home/ec2-user/.rbenv/shimsディレクトリ下を指定してあげる
 describe command('gem list puma -i ') do
   let(:disable_sudo) { true }
   let(:path) { '/home/ec2-user/.rbenv/shims:$PATH' }
