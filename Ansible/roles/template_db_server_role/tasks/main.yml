@@ -1,7 +1,7 @@
 # roles/template_db_server_role/templates/nginx.conf
 
-- name: Read external variable file
-  include_vars: "/home/circleci/project/Ansible/vars.yml"
+# - name: Read external variable file
+#  include_vars: "/home/circleci/project/Ansible/vars.yml"
 
 - name: Copy database.yml.sample to database.yml on Rails application
   copy: 
@@ -10,6 +10,7 @@
    dest: "/home/ec2-user/raisetech-live8-sample-app/config/database.yml"
 
 - name: Config database.yml for connecting Nginx server to Puma server 
+  include_vars: "/home/circleci/project/Ansible/vars.yml"
   copy: 
     src: "/home/circleci/project/Ansible/roles/template_db_server_role/templates/database.yml"
     dest: "/home/ec2-user/raisetech-live8-sample-app/config/database.yml"
