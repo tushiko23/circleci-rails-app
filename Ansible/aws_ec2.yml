@@ -1,18 +1,19 @@
+# ダイナミックインベントリを今回実行インベントリに指定
 plugin: aws_ec2
 regions: ap-northeast-1
 
 # フィルタの設定
-# "起動している"かつ"t2.micro"かつ"キーペア名test-keyを使用している" EC2インスタンスのみを対象
-# tagの値が自身でで設定したタグ"'Rails-app-Project'のインスタンスのみを対象"
-# cloudformationのスタック名のタグも指定する
+# "起動している特定のタグのみのt2.mirocoタイプのEC2インスタンスのみを対象
+# tagの値が自身で設定したタグ"'Rails-app-Project'かつCFnのスタック名'EC2-Stack'を指定
+
 filters: 
   instance-state-name: running
   instance-type: t2.micro
-  # key-name:  ansible_test_key
+  # key-name:  test-key
   tag:Name: Rails-app-Project
   tag:aws:cloudformation:stack-name: EC2-Stack
 
-# 取得したい値を設定(上から順)
+# 取得したい値を設定(上から順)今回は,ec2のパブリックIPを設定
 hostnames:
   - ip-address
 
