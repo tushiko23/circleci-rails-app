@@ -1,3 +1,5 @@
+# roles/s3_config_role/tasks/main.yml
+
 - name: Comment out store uploaded files on the local file configration
   lineinfile:
     path: "/home/ec2-user/raisetech-live8-sample-app/config/environments/development.rb"
@@ -5,6 +7,8 @@
     line: "  # config.active_storage.service = :local"
     regexp: "  config.active_storage.service = :local"  
     insertbefore:  "^\\s*#//s*Don't care if the mailer can't send.*$"
+
+# config.active_storage.service = :amazonが何度もコメントインしないように設定
 
 - name: Check if the comment line already exists
   shell: |
@@ -25,6 +29,7 @@
 - name: Read external variable file
   include_vars: "/home/circleci/project/Ansible/vars.yml"
 
+# バケット名を環境変数で設定
 - name: Config my S3 bucket name
   lineinfile:
     path: /home/ec2-user/.bash_profile

@@ -1,3 +1,5 @@
+# roles/node_install_role/tasks/main.yml
+
 - name: Install NVM for installing node v17.9.1
   shell: bash -lc "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash"
 

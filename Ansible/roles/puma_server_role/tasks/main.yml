@@ -1,3 +1,5 @@
+# roles/puma_server_role/tasks/main.yml
+
 - name: Port 3000 delete line to puma.rb 
   lineinfile:
     path: "/home/ec2-user/raisetech-live8-sample-app/config/puma.rb"
@@ -20,6 +22,7 @@
   become: yes
   become_user: root
 
+# 事前にエラー回避のため,socketsディレクトリとpidsディレクトリを追加
 - name: sockets directory created to connect domain socket and start puma service
   file:
     path: "/home/ec2-user/raisetech-live8-sample-app/tmp/sockets"
@@ -36,6 +39,10 @@
     group: "ec2-user"
     mode: "775"
 
+# asset precompileの設定を追加し,公開ディレクトリ"今回はraisetech-live8-sample-app/public/"に.css.jsファイルの読み込みを反映させる 
+# この設定public/assets/下に.css.jsファイルが生成されてアプリケーション表示が可能になる
+# test,production環境では "RAILS_ENV=test,RAILS_ENV=production" といった具合に環境に応じて変更する
+ 
 - name: Set up assets precompile on development rails app
   shell: bash -lc "RAILS_ENV=development bin/rails assets:precompile"
   args:

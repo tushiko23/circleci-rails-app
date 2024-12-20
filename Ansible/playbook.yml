@@ -4,15 +4,10 @@
   become: True
   become_user: ec2-user
 
-  #vars:
+  # user,keypair名を使用したい場合
+  # vars:
   #  ansible_user: ec2-user
   #  ansible_ssh_private_key_file: ~/.ssh/test-key.pem   
-
-      #- name: Deploy Rails application on AWS resource
-      #  hosts:
-      #    - ansible-target-node
-      #  become: True
-      #  become_user: ec2-user
 
   roles:
     - ping_check_role

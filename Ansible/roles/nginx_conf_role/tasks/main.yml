@@ -1,3 +1,6 @@
+# roles/nginx_conf_role/tasks/main.yml
+
+# src:にてcircleci環境下での絶対パスを指定
 - name: Config nginx.conf for Puma server socket connecting
   copy: 
     src: /home/circleci/project/Ansible/roles/nginx_conf_role/tasks/nginx.conf

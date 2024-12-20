@@ -1,3 +1,5 @@
+# 先にデフォルトで入っているdatabase mariadbを削除してから実行
+
 - name: Remove MariaDB of default DB server on my EC2
   shell: |
     sudo yum update -y

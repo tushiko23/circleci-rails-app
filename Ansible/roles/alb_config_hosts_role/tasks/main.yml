@@ -1,3 +1,6 @@
+# roles/alb_config_hosts_role/tasks/main.yml
+
+# ciecleciの絶対パスを指定
 - name: Read external variable file
   include_vars: "/home/circleci/project/Ansible/vars.yml"
 

@@ -1,3 +1,6 @@
+# roles/image_magick_config_role/tasks/main.yml
+# 画像表示の設定を追加
+
 - name: Active Storage setting up Minimagick
   lineinfile:
     path: "/home/ec2-user/raisetech-live8-sample-app/config/application.rb"
