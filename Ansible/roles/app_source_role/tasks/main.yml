@@ -1,3 +1,6 @@
+# roles/app_source_role/tasks/main.yml
+# 存在している場合のみcloneする,存在している場合はスキップする
+
 - name: Check if raisetech-live8-sample-app is cloned on my EC2
   shell: ls -l | grep  "raisetech-live8-sample-app"
   register: app_exists_check

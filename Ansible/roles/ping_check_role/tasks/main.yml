@@ -1,2 +1,4 @@
+# roles/ping_check_role/tasks/main.yml
+# 最初にターゲットノードへの疎通確認をする
 - name: ping checking to target node connection
   ping:

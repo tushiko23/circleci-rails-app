@@ -1,3 +1,6 @@
+# roles/ruby_install_role/tasks/main.yml
+# 必ずec2-userでインストールする
+
 - name: Install rbenv
   git:
     repo: https://github.com/sstephenson/rbenv.git
@@ -23,6 +26,9 @@
   git:
     repo: https://github.com/sstephenson/ruby-build.git
     dest: /home/ec2-user/.rbenv/plugins/ruby-build  
+
+# ruby 3.2.3 versionがなかったらインストールする この設定がなければ2度目以降もインストールを試みタイムアウトエラーが起こる
+# when:にて!=0の正規表現で成功値0以外のコードを返したときにインストールを試みる.それ以外はスキップする設定
 
 - name: Check if Ruby 3.2.3 is installed
   shell: bash -lc "/home/ec2-user/.rbenv/bin/rbenv versions | grep  3.2.3"

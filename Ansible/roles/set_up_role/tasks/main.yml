@@ -1,3 +1,6 @@
+# roles/set_up_role/tasks/main.yml
+
+# bin/setup コマンドで同時にgemの依存関係を解決するために実行されるが,"t2micro instance"だとメモリの関係で処理が追いつかずタイムアウトになるので先に実行
 - name: Run Command "bundle install"
   shell: bash -lc "bundle install"
   args: 
@@ -5,6 +8,7 @@
   vars:
     ansible_command_timeout: 1800
 
+# webpackの依存関係を解決する
 - name: Installing Yarn to resoulve Webpack Dependencies
   shell: bash -lc "yarn install"
   args:

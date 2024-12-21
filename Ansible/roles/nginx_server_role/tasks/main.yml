@@ -1,3 +1,5 @@
+# roles/nginx_server_role/tasks/main.yml
+
 - name: Install the latest version of nginx
   command: sudo amazon-linux-extras install nginx1 -y
 

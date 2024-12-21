@@ -1,3 +1,7 @@
+# roles/db_server_role/tasks/main.yml
+# lineinfile moduleでdbの認証情報を入力していますが,template moduleでも可能　使用したい方は下のコメントアウト値を参照
+
+# circleciの絶対パスを指定CI/CDツールの環境に応じて変更
 - name: Read external variable file
   include_vars: "/home/circleci/project/Ansible/vars.yml"
 
