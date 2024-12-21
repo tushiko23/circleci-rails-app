@@ -21,6 +21,7 @@
     - webpack_install_role
     - mysql_install_role
     - template_db_server_role
+    # You can also use the db_server_role with the lineinfile module instead of template_db_server_role
     # - db_server_role   
     - image_magick_config_role 
     - set_up_role
