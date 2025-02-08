@@ -76,18 +76,10 @@ end
 
 describe command('curl http://127.0.0.1:#{listen_port}/_plugin/head/ -o /dev/null -w "%{http_code}\n" -s') do
   its(:stdout) { should match /^200$/ }
+  its(:stdout) { should match /^301$/ }
 end
 
-#describe command('curl http://127.0.0.1:#{listen_port}/_plugin/head/ -o /dev/null -w "%{http_code}\n" -s') do
-#  its(:stdout) { should match /^301$/ }
-#end
-
-#describe Net::HTTP.get_response(URI('http://localhost:port/path')) do
-#  its(:code) { should eq '301' }
-#  its(:msg) { should match 'Moved Permanently' }
-#end
-
-# defauly sample
+# default sample
 #require 'spec_helper'
 
 #describe package('httpd'), :if => os[:family] == 'redhat' do
