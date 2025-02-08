@@ -161,14 +161,14 @@ jobs:
 workflows: 
   Deproy Rails Application using CFn and Ansible and CircleCI after Testing Serverspec:
     jobs:
-      #- cfn-lint
-      #- execute_cfn:
-      #    requires:
-      #      - cfn-lint
-      #- execute_ansible:
-      #    requires:
-      #      - execute_cfn
+      - cfn-lint
+      - execute_cfn:
+          requires:
+            - cfn-lint
+      - execute_ansible:
+          requires:
+            - execute_cfn
       - execute_serverspec:
-      #    requires:
-      #      - execute_ansible
+          requires:
+            - execute_ansible
       
