@@ -37,7 +37,7 @@ jobs:
             aws cloudformation deploy --stack-name RDS-Stack --template-file lecture13/project-5.yml
             aws cloudformation deploy --stack-name S3Bucket-Stack --template-file lecture13/project-6.yml --parameter-overrides S3BucketName=$S3_BUCKET_NAME
             aws cloudformation wait stack-create-complete --stack-name RDS-Stack
-            aws cloudformation deploy --stack-name Route53-Stack --template-file lecture13/project-7.yml --parameter-overrides HostedZoneName=$HOSTZONE_NAME_MY_DOMAIN ROUTE53_HOSTZONE_ID=$HostedZoneId
+            aws cloudformation deploy --stack-name Route53-Stack --template-file lecture13/project-7.yml --parameter-overrides HostedZoneName=$HOSTZONE_NAME_MY_DOMAIN HostedZoneId=$ROUTE53_HOSTZONE_ID
 
       - run:
           name: Get Dynamic Resources on AWS Ressources
