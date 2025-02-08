@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Create Route53 A record Alias ALB"
+
+Parameters:
+  HostedZoneName:
+    Description: my domain name
+    Type: String
+  HostedZoneId:
+    Description: Config HostZone id
+    Type: String
+
+Resources:
+  route53RSgroup:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      RecordSets:
+        - Name: !Sub "${HostedZoneName}"
+          Type: A
+          AliasTarget:
+            HostedZoneId: !ImportValue "Rails-app-Project-Rails-Project-hostzoneid"
+            DNSName: !ImportValue "Rails-app-Project-Rails-Project-dns-name"
+        - Name: !Sub "www.${HostedZoneName}"
+          Type: A
+          AliasTarget:
+            HostedZoneId: !ImportValue "Rails-app-Project-Rails-Project-hostzoneid"
+            DNSName: !ImportValue "Rails-app-Project-Rails-Project-dns-name"
