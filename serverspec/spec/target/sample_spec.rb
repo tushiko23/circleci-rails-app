@@ -78,8 +78,8 @@ describe command('curl http://127.0.0.1:#{listen_port}/_plugin/head/ -o /dev/nul
   its(:stdout) { should match /^200$/ }
 end
 
-# HTTP通信がHTTPS通信にリダイレクトされるステータス301を返すかも確認
-describe command('curl http://127.0.0.1:#{listen_port}/_plugin/head/ -o /dev/null -w "%{http_code}\n" -s') do
+# 設定したドメインでHTTP通信がHTTPS通信にリダイレクトされるステータス301を返すかも確認
+describe command('curl http://tushiko23-tech.com:#{listen_port}/_plugin/head/ -o /dev/null -w "%{http_code}\n" -s') do
   its(:stdout) { should match /^301$/ }
 end
 
