@@ -28,6 +28,6 @@
     - nginx_server_role 
     - puma_server_role
     - nginx_conf_role
-    - alb_config_hosts_role  
+    - add_config_hosts_role  
     - s3_config_role
   
