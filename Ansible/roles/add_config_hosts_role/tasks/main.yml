@@ -8,7 +8,7 @@
   lineinfile:
     path: "/home/ec2-user/raisetech-live8-sample-app/config/environments/development.rb"
     state: present
-    line: 'config.hosts << "{{ alb_dnsname }}"'
+    line: 'config.hosts << "{{ my_domain_address }}"'
     insertafter: "^\\s*#\\s*Settings specified here will take precedence over those in config/application.rb.*$"
 
 - name: Retart puma service
@@ -16,4 +16,4 @@
     name: puma
     state: restarted
   become: True
-  become_user: root      
+  become_user: root
