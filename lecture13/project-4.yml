@@ -14,6 +14,9 @@ Parameters:
     Type: String
     Default: "ipv4"
 
+  CertificateArn:
+    Type: String
+
 Resources:
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
@@ -22,7 +25,6 @@ Resources:
       Tags:
         - Key: Name
           Value: !Ref NameBase
-
       Port: 80
       Protocol: HTTP
       Matcher:
@@ -52,17 +54,39 @@ Resources:
           Value: !Ref NameBase
 
   #=================================
-  # ALBをターゲットグループに関連付け
-  #================================= 
+  # リスナーの設定1  HTTPリスナーはurlにリダイレクトされるように設定。
+  #=================================
   ListenerHTTP:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: redirect
+          RedirectConfig:
+            Host: '#{host}'
+            Path: '/#{path}'
+            Port: 443
+            Protocol: HTTPS
+            Query: '#{query}'
+            StatusCode: HTTP_301
+      LoadBalancerArn: !Ref ALB
+      Port: 80
+      Protocol: HTTP
+
+#=================================
+# リスナーの設定2  HTTPSリスナーはターゲットグループに転送されるように設定。
+#=================================
+
+  ListenerHTTPS:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       DefaultActions:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
       LoadBalancerArn: !Ref ALB
-      Port: 80
-      Protocol: HTTP
+      Port: 443
+      Protocol: HTTPS
+      Certificates:
+        - CertificateArn: !Sub ${CertificateArn}
 
 Outputs:
   OutputDNSName:
