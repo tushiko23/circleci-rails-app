@@ -15,13 +15,21 @@ Parameters:
     Type: String
     Default: '0.0.0.0/0'
 
-  SgIngFromPort1:
+  SgIngCidrIp2:
+    Type: String
+    Default: '::/0'
+
+  SgIngFromPortHTTP:
     Type: String
     Default: '80'
 
+  SgIngFromPortHTTPS:
+    Type: String
+    Default: '443'
+
   SgIngCidrIpSSH:
     Type: String
-    Default: 'My IP' 
+    Default: 'My IP'
 
   SgIngFromPortSSH:
     Type: String
@@ -55,9 +63,9 @@ Resources:
     Properties:
       GroupId: !Ref ProjectSG1
       IpProtocol: tcp
-      FromPort: !Ref SgIngFromPort1
-      ToPort: !Ref SgIngFromPort1
-      CidrIp: !Ref SgIngCidrIp1
+      FromPort: !Ref SgIngFromPortHTTP
+      ToPort: !Ref SgIngFromPortHTTP
+      SourceSecurityGroupId: !Ref ProjectSG3
 
   ProjectSG1SSH:
     Type: AWS::EC2::SecurityGroupIngress
@@ -112,14 +120,41 @@ Resources:
         - Key: "Name"
           Value: !Ref NameBase
 
-  ProjectSG3Ingress:
+  ProjectSG3IngressHTTPCidrIPv4:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
       GroupId: !Ref ProjectSG3
       IpProtocol: tcp
-      FromPort: !Ref SgIngFromPort1
-      ToPort: !Ref SgIngFromPort1
+      FromPort: !Ref SgIngFromPortHTTP
+      ToPort: !Ref SgIngFromPortHTTP
       CidrIp: !Ref SgIngCidrIp1
+
+  ProjectSG3IngressHTTPCidrIPv6:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref ProjectSG3
+      IpProtocol: tcp
+      FromPort: !Ref SgIngFromPortHTTP
+      ToPort: !Ref SgIngFromPortHTTP
+      CidrIpv6: !Ref SgIngCidrIp2
+
+  ProjectSG3IngressHTTPSCidrIPv4:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref ProjectSG3
+      IpProtocol: tcp
+      FromPort: !Ref SgIngFromPortHTTPS
+      ToPort: !Ref SgIngFromPortHTTPS
+      CidrIp: !Ref SgIngCidrIp1
+
+  ProjectSG3IngressHTTPSCidrIPv6:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref ProjectSG3
+      IpProtocol: tcp
+      FromPort: !Ref SgIngFromPortHTTPS
+      ToPort: !Ref SgIngFromPortHTTPS
+      CidrIpv6: !Ref SgIngCidrIp2
 
   SG2Egress3:
     Type: AWS::EC2::SecurityGroupEgress
