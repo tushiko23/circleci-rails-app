@@ -22,38 +22,38 @@ Parameters:
   EC2InstanceVolumeSize:
     Type: String
     Default: "20"
-  
+
   EC2InstanceVolumeType:
     Type: String
     Default: "gp2"
-  
+
   EC2InstanceAMI:
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Default: "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
     Description: The AMI ID for the EC2 instance
 
-  S3BucketName: 
+  S3BucketName:
     Description: Type of this BucketName
     Type: String
-    Default: "s3-bucket-name" 
+    Default: "s3-bucket-name"
 
 #-----------------------------------------------------------------------------
 # IAM Role to access S3 Bucket
 #-----------------------------------------------------------------------------
-Resources:  
+Resources:
   AccessRole:
     Type: "AWS::IAM::Role"
     Properties:
       RoleName: "Rails-app-project-Role"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
-        Statement: 
-          - 
+        Statement:
+          -
             Effect: "Allow"
-            Principal: 
-              Service: 
+            Principal:
+              Service:
                 - "ec2.amazonaws.com"
-            Action: 
+            Action:
               - "sts:AssumeRole"
       Path: "/"
       Tags:
@@ -88,11 +88,11 @@ Resources:
     Properties:
       Path: "/"
       Roles:
-      - !Ref AccessRole 
+      - !Ref AccessRole
 
 # ------------------------------------------------------------
 #  EC2の作成
-# ------------------------------------------------------------   
+# ------------------------------------------------------------
   ProjectEC2:
     Type: AWS::EC2::Instance
     Properties:
@@ -117,7 +117,7 @@ Resources:
 
 # ------------------------------------------------------------
 #  ElasticIPの作成&EC2にアタッチ
-# ------------------------------------------------------------ 
+# ------------------------------------------------------------
   ElasticIP:
     Type: "AWS::EC2::EIP"
     Properties:
@@ -190,4 +190,3 @@ Outputs:
 #          Resource: "*"
 #      Roles:
 #      - !Ref AccessRole
-
