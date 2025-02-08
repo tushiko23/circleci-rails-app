@@ -53,6 +53,7 @@ jobs:
             echo "rds_end_point: $RDS_END_POINT" >> Ansible/vars.yml
             echo "rds_password: \"'${RDS_PASSWORD}'\"" >> Ansible/vars.yml
             echo "alb_dnsname: $ALB_DNSNAME" >> Ansible/vars.yml
+            echo "my_domain_address: $HOSTZONE_NAME_MY_DOMAIN" >> Ansible/vars.yml
             echo "s3_bucket_name: $S3_BUCKET_NAME" >> Ansible/vars.yml
             echo "$EC2_Public_IP_Address" >> ip_address.txt
             cat "ip_address.txt"
